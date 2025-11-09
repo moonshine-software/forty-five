@@ -12,6 +12,7 @@ This document is designed for AI assistants that generate interfaces based on Mo
 - [Grid](#grid-grid-layout) - `<x-moonshine::layout.grid>`
 - [Flex](#flex-flex-container) - `<x-moonshine::layout.flex>`
 - [TopBar](#topbar-top-navigation) - `<x-moonshine::layout.top-bar>`
+- [MobileBar](#mobilebar-mobile-navigation) - `<x-moonshine::layout.mobile-bar>`
 - [Footer](#footer-page-footer) - `<x-moonshine::layout.footer>`
 - [Div](#div-layout-div) - `<x-moonshine::layout.div>`
 - [Body](#body-layout-body) - `<x-moonshine::layout.body>`
@@ -57,7 +58,6 @@ This document is designed for AI assistants that generate interfaces based on Mo
 - [Menu](#menu-navigation-menu) - `<x-moonshine::layout.menu>`
 - [ThemeSwitcher](#themeswitcher-theme-toggle) - `<x-moonshine::layout.theme-switcher>`
 - [Burger](#burger-mobile-menu-button) - `<x-moonshine::layout.burger>`
-- [Mobilebar](#mobilebar-mobile-navigation) - `<x-moonshine::layout.mobilebar>`
 
 ### Form & Field Components
 - [FieldsGroup](#fieldsgroup-field-grouping) - `<x-moonshine::fields-group>`
@@ -107,9 +107,16 @@ MoonShine uses **Heroicons** for all icon displays. All icons are available at: 
 
         <x-moonshine::layout.body>
             <x-moonshine::layout.wrapper>
-                <x-moonshine::layout.content>
-                    <!-- All main page content here (recommended) -->
-                </x-moonshine::layout.content>
+                <x-moonshine::layout.div class="layout-main">
+                    <x-moonshine::layout.div class="layout-page">
+                        <x-moonshine::layout.header>
+                            <x-moonshine::breadcrumbs :items="['#' => 'Home']"/>
+                        </x-moonshine::layout.header>
+                        <x-moonshine::layout.content>
+                            <!-- All main page content here (recommended) -->
+                        </x-moonshine::layout.content>
+                    </x-moonshine::layout.div>
+                </x-moonshine::layout.div>
             </x-moonshine::layout.wrapper>
         </x-moonshine::layout.body>
     </x-moonshine::layout.html>
@@ -266,177 +273,158 @@ If you can't use automatic publishing, configure manually:
 
 ### Sidebar (Side Panel)
 **Purpose:** Creating side navigation panel
+
 ```blade
-<!-- Full sidebar structure -->
+<!-- Full sidebar structure with all components -->
 <x-moonshine::layout.sidebar :collapsed="true">
-    <x-moonshine::layout.div class="menu-heading">
-        <x-moonshine::layout.logo href="/" :logo="'/logo.png'" :minimized="true"/>
-        <x-moonshine::layout.div class="menu-heading-actions">
-            <x-moonshine::layout.div class="menu-heading-mode">
-                <x-moonshine::layout.theme-switcher/>
-            </x-moonshine::layout.div>
-            <x-moonshine::layout.div class="menu-heading-burger">
-                <x-moonshine::layout.burger/>
-            </x-moonshine::layout.div>
+    <x-moonshine::layout.div class="menu-header">
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo
+                href="/"
+                logo="/logo.png"
+                logo-small="/logo-small.png"
+                :minimized="true"
+            />
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu-actions">
+            <x-moonshine::layout.theme-switcher/>
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger sidebar />
         </x-moonshine::layout.div>
     </x-moonshine::layout.div>
 
-    <x-moonshine::layout.div class="menu" ::class="asideMenuOpen && '_is-opened'">
-        <x-moonshine::layout.menu :elements="[
-            ['label' => 'Панель управления', 'url' => '/dashboard', 'icon' => 'home'],
-            ['label' => 'Заказы', 'url' => '/orders', 'icon' => 's.shopping-bag'],
-            ['label' => 'Товары', 'url' => '/products', 'icon' => 'cube'],
-            ['label' => 'Клиенты', 'url' => '/customers', 'icon' => 'users'],
-            ['label' => 'Аналитика', 'url' => '/analytics', 'icon' => 'chart-bar'],
-            ['label' => 'Отчеты', 'url' => '/reports', 'icon' => 'document-text'],
-            ['label' => 'Настройки', 'url' => '/settings', 'icon' => 'cog-6-tooth']
-        ]"/>
-    </x-moonshine::layout.div>
-</x-moonshine::layout.sidebar>
-
-<!-- Minimal sidebar structure (burger only) -->
-<x-moonshine::layout.sidebar>
-    <x-moonshine::layout.div class="menu-heading">
-        <x-moonshine::layout.div class="menu-heading-actions">
-            <x-moonshine::layout.div class="menu-heading-burger">
-                <x-moonshine::layout.burger />
-            </x-moonshine::layout.div>
-        </x-moonshine::layout.div>
-    </x-moonshine::layout.div>
-
-    <x-moonshine::layout.div class="menu" ::class="asideMenuOpen && '_is-opened'">
+    <x-moonshine::layout.div class="menu menu--vertical">
         <x-moonshine::layout.menu :elements="[
             ['label' => 'Dashboard', 'url' => '/dashboard', 'icon' => 'home'],
-            ['label' => 'Products', 'url' => '/products', 'icon' => 'cube']
+            ['label' => 'Orders', 'url' => '/orders', 'icon' => 's.shopping-bag'],
+            ['label' => 'Products', 'url' => '/products', 'icon' => 'cube'],
+            ['label' => 'Customers', 'url' => '/customers', 'icon' => 'users'],
+            ['label' => 'Settings', 'url' => '/settings', 'icon' => 'cog-6-tooth']
+        ]"/>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.sidebar>
+
+<!-- Minimal sidebar structure (logo and burger only) -->
+<x-moonshine::layout.sidebar :collapsed="true">
+    <x-moonshine::layout.div class="menu-header">
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo
+                href="/"
+                logo="/logo.png"
+                logo-small="/logo-small.png"
+                :minimized="true"
+            />
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger sidebar />
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+
+    <x-moonshine::layout.div class="menu menu--vertical">
+        <x-moonshine::layout.menu :elements="[
+            ['label' => 'Dashboard', 'url' => '/'],
+            ['label' => 'Settings', 'url' => '/settings']
         ]"/>
     </x-moonshine::layout.div>
 </x-moonshine::layout.sidebar>
 ```
+
 **Parameters:**
-- `collapsed` (bool) - collapse sidebar by default
+- `collapsed` (bool) - adds a toggle button to collapse/expand the sidebar
 
-**⚠️ Important Sidebar Structure:**
+**Important Wrapper Structure:**
 
-**Menu Wrapper:**
-When using collapsible sidebar functionality, the menu must be wrapped in `<x-moonshine::layout.div class="menu" ::class="asideMenuOpen && '_is-opened'">`. This wrapper:
-- Enables proper collapse/expand animations
-- Manages visibility states with Alpine.js reactive classes
-- Required for responsive behavior on mobile devices
+Sidebar uses specific CSS class wrappers for proper styling and functionality:
 
-**Header Actions Structure:**
-Theme switcher and burger button in the sidebar header require specific wrapper structure:
-```blade
-<x-moonshine::layout.div class="menu-heading-actions">
-    <x-moonshine::layout.div class="menu-heading-mode">
-        <x-moonshine::layout.theme-switcher/>
-    </x-moonshine::layout.div>
-    <x-moonshine::layout.div class="menu-heading-burger">
-        <x-moonshine::layout.burger/>
-    </x-moonshine::layout.div>
-</x-moonshine::layout.div>
-```
-This structure:
-- `menu-heading-actions` - container for all header action buttons
-- `menu-heading-mode` - specific wrapper for theme switcher
-- `menu-heading-burger` - specific wrapper for burger menu button
-- Required for proper alignment, spacing, and responsive behavior
+1. **`menu-header`** - Container for the top section of sidebar (logo, actions, burger)
+2. **`menu-logo`** - Wrapper for the logo component
+3. **`menu-actions`** - Wrapper for theme switcher, notifications, or other action components
+4. **`menu-burger`** - Wrapper for the burger button
+5. **`menu menu--vertical`** - Wrapper for the navigation menu (vertical orientation)
+
+These wrappers are **required** for proper alignment, spacing, and responsive behavior.
 
 ### Header (Top Header)
 **Purpose:** Creating top page header with navigation
 ```blade
 <x-moonshine::layout.header>
-    <x-moonshine::breadcrumbs :items="['#' => 'Home', '/section' => 'Section']"/>
+    <x-moonshine::layout.div class="menu-burger">
+        <x-moonshine::layout.burger sidebar />
+    </x-moonshine::layout.div>
+    <x-moonshine::breadcrumbs :items="['#' => 'Home']"/>
+    <x-moonshine::layout.search placeholder="Search" />
+    <x-moonshine::layout.locales :locales="collect()"/>
 </x-moonshine::layout.header>
 ```
+
+**Responsive Burger Menu:**
+- `menu-burger` with `burger` component in header is required for responsive design
+- **Mobile devices:** sidebar is hidden, burger button is visible and opens menu on click
+- **Large screens:** burger button is automatically hidden, sidebar is always visible
+- Essential for proper mobile navigation experience
+- **Important:** Burger in header should typically have the `sidebar` or `mobile-bar` attribute depending on your layout
 
 ### Wrapper (Layout Wrapper)
 **Purpose:** Wrapper component to ensure proper display of layout elements
 ```blade
 <x-moonshine::layout.wrapper>
-    <x-moonshine::layout.sidebar>
+    <x-moonshine::layout.sidebar :collapsed="true">
         <!-- Sidebar content -->
     </x-moonshine::layout.sidebar>
-    <x-moonshine::layout.content>
-        <!-- Main content -->
-    </x-moonshine::layout.content>
+
+    <x-moonshine::layout.div class="layout-main">
+        <x-moonshine::layout.div class="layout-page">
+            <x-moonshine::layout.header>
+                <!-- Main content header -->
+            </x-moonshine::layout.header>
+            <x-moonshine::layout.content>
+                <!-- Main content -->
+            </x-moonshine::layout.content>
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
 </x-moonshine::layout.wrapper>
 ```
 
-**Important Notes:**
-- **Layout wrapper** - used immediately after `Body` component
-- **Ensures proper display** - provides correct layout structure for sidebar and content
-- **Flexible content** - can contain various layout elements
-
-**Common patterns:**
-
-```blade
-<!-- Basic wrapper with content -->
-<x-moonshine::layout.body>
-    <x-moonshine::layout.wrapper>
-        <x-moonshine::layout.content>
-            <!-- Page content -->
-        </x-moonshine::layout.content>
-    </x-moonshine::layout.wrapper>
-</x-moonshine::layout.body>
-
-<!-- With sidebar and content -->
-<x-moonshine::layout.body>
-    <x-moonshine::layout.wrapper>
-        <x-moonshine::layout.sidebar>
-            <!-- Sidebar -->
-        </x-moonshine::layout.sidebar>
-        <x-moonshine::layout.content>
-            <!-- Main content -->
-        </x-moonshine::layout.content>
-    </x-moonshine::layout.wrapper>
-</x-moonshine::layout.body>
-```
-
-### Content (Main Content)
-**Purpose:** Container for main page content
-```blade
-<x-moonshine::layout.content>
-    <!-- Page content -->
-</x-moonshine::layout.content>
-```
-
-**Best Practices:**
-- **Recommended:** Use one `content` component for main page content area
-- **Flexible:** Multiple `content` components are allowed if needed for layout structure
-- **Semantic:** Think of `content` as semantic sections of your page
+**Important Structure Notes:**
+- **Required wrappers:** Content area must be wrapped in `<x-moonshine::layout.div class="layout-main">` → `<x-moonshine::layout.div class="layout-page">`
+- **Optional header:** The `<x-moonshine::layout.header>` inside layout-page is optional
+- These wrappers ensure proper layout positioning, spacing, and responsive behavior
 
 **Single content (recommended):**
 ```blade
 <x-moonshine::layout.body>
-    <x-moonshine::layout.header>...</x-moonshine::layout.header>
     <x-moonshine::layout.wrapper>
-        <x-moonshine::layout.content>
-            <!-- All main page content here -->
-            <section id="hero">...</section>
-            <section id="features">...</section>
-            <section id="footer">...</section>
-        </x-moonshine::layout.content>
+        <x-moonshine::layout.div class="layout-main">
+            <x-moonshine::layout.div class="layout-page">
+                <x-moonshine::layout.header>
+                    <!-- Main content header -->
+                </x-moonshine::layout.header>
+                <x-moonshine::layout.content>
+                    <!-- All main page content here -->
+                    <section id="hero">...</section>
+                    <section id="features">...</section>
+                    <section id="footer">...</section>
+                </x-moonshine::layout.content>
+            </x-moonshine::layout.div>
+        </x-moonshine::layout.div>
     </x-moonshine::layout.wrapper>
 </x-moonshine::layout.body>
 ```
 
-**Multiple content (when needed for specific layout):**
-```blade
-<x-moonshine::layout.body>
-    <x-moonshine::layout.header>...</x-moonshine::layout.header>
-    <x-moonshine::layout.wrapper>
-        <x-moonshine::layout.content id="hero">
-            <!-- Hero section -->
-        </x-moonshine::layout.content>
-        <x-moonshine::layout.content id="main">
-            <!-- Main content -->
-        </x-moonshine::layout.content>
-    </x-moonshine::layout.wrapper>
-    <x-moonshine::layout.footer>
-        <!-- Footer content -->
-    </x-moonshine::layout.footer>
-</x-moonshine::layout.body>
-```
+**Layout Customization:**
+- **Centered content:** Add `layout-main-centered` class to `layout-main` to center content in a container instead of full width
+  ```blade
+  <x-moonshine::layout.div class="layout-main layout-main-centered">
+  ```
+  This works both with and without sidebar
+- **Remove border:** Add `layout-page-simple` class to `layout-page` to remove default border
+  ```blade
+  <x-moonshine::layout.div class="layout-page layout-page-simple">
+  ```
 
 ### Grid (Grid Layout)
 **Purpose:** Creating grid layout (12 columns)
@@ -1229,72 +1217,136 @@ ActionButton::make('Open Panel')->toggleOffCanvas('my-panel')
 - **Responsive**: Heading styles adapt to screen size
 
 ### Burger (Mobile Menu Button)
-**Purpose:** Mobile menu toggle button (hamburger icon)
+**Purpose:** Mobile menu toggle button (hamburger icon) that controls different menu locations
+
 ```blade
-<x-moonshine::layout.burger />
+<!-- Burger for sidebar (default behavior) -->
+<x-moonshine::layout.burger sidebar />
+
+<!-- Burger for topbar -->
+<x-moonshine::layout.burger topbar />
+
+<!-- Burger for mobile-bar -->
+<x-moonshine::layout.burger mobile-bar />
 ```
 
-**Burger Usage:**
-- **Mobile navigation**: Typically used in mobile layouts
-- **Sidebar toggle**: Controls sidebar visibility on small screens
-- **Auto-generated**: Usually part of default MoonShine layout
-- **No parameters**: Simple component with built-in functionality
+**Location Attributes:**
+- **`sidebar`** - Controls sidebar menu (default if no attribute specified)
+- **`topbar`** - Controls top navigation bar menu
+- **`mobile-bar`** - Controls mobile-specific dropdown menu
 
-**Common Integration:**
+**Important:**
+The burger button must specify which menu it controls by adding the appropriate location attribute. This determines what menu will open when the burger is clicked.
+
+**Common Integration Examples:**
+
 ```blade
-<x-moonshine::layout.sidebar>
-    <x-moonshine::layout.div class="menu-heading">
-        <x-moonshine::layout.logo href="/" :logo="'/logo.png'"/>
-        <x-moonshine::layout.div class="menu-heading-actions">
-            <x-moonshine::layout.div class="menu-heading-burger">
-                <x-moonshine::layout.burger />
-            </x-moonshine::layout.div>
+<!-- In Sidebar -->
+<x-moonshine::layout.sidebar :collapsed="true">
+    <x-moonshine::layout.div class="menu-header">
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo href="/" :logo="'/logo.png'"/>
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger sidebar />
         </x-moonshine::layout.div>
     </x-moonshine::layout.div>
 </x-moonshine::layout.sidebar>
+
+<!-- In TopBar -->
+<x-moonshine::layout.top-bar>
+    <x-moonshine::layout.div class="menu-actions">
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger topbar />
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.top-bar>
+
+<!-- In MobileBar -->
+<x-moonshine::layout.mobile-bar>
+    <x-moonshine::layout.div class="menu-burger">
+        <x-moonshine::layout.burger mobile-bar />
+    </x-moonshine::layout.div>
+</x-moonshine::layout.mobile-bar>
 ```
-
-
-
 
 ### TopBar (Top Navigation)
 **Purpose:** Creating top navigation panels
-```blade
-<!-- Standalone TopBar (without sidebar) -->
-<x-moonshine::layout.top-bar>
-    <x-moonshine::layout.menu
-        :elements="[
-            ['label' => 'Dashboard', 'url' => '/'],
-            ['label' => 'Users', 'url' => '/users'],
-            ['label' => 'Settings', 'url' => '/settings']
-        ]"
-    />
 
-    <!-- Additional TopBar components can be added here -->
+```blade
+<!-- Full TopBar structure with all sections -->
+<x-moonshine::layout.top-bar>
+    <x-moonshine::layout.div class="menu-logo">
+        <x-moonshine::layout.logo
+            href="/"
+            logo="/logo.svg"
+            logo-small="/logo-small.svg"
+            :minimized="true"
+        />
+    </x-moonshine::layout.div>
+
+    <x-moonshine::layout.div class="menu menu--horizontal">
+        <x-moonshine::layout.menu
+            :top="true"
+            :elements="[
+                ['label' => 'Dashboard', 'url' => '/'],
+                ['label' => 'Users', 'url' => '/users'],
+                ['label' => 'Settings', 'url' => '/settings']
+            ]"
+        />
+    </x-moonshine::layout.div>
+
+    <x-moonshine::layout.div class="menu-actions">
+        <div class="menu-divider menu-divider--vertical"></div>
+        <x-moonshine::layout.theme-switcher/>
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger topbar />
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
 </x-moonshine::layout.top-bar>
 
 <!-- TopBar with Sidebar (must be inside wrapper) -->
 <x-moonshine::layout.wrapper>
     <x-moonshine::layout.top-bar>
-        <x-moonshine::layout.menu
-            :elements="[
-                ['label' => 'Home', 'url' => '/'],
-                ['label' => 'About', 'url' => '/about']
-            ]"
-        />
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo href="/" logo="/logo.svg"/>
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu menu--horizontal">
+            <x-moonshine::layout.menu
+                :top="true"
+                :elements="[
+                    ['label' => 'Home', 'url' => '/'],
+                    ['label' => 'About', 'url' => '/about']
+                ]"
+            />
+        </x-moonshine::layout.div>
     </x-moonshine::layout.top-bar>
 
     <x-moonshine::layout.sidebar>
         <!-- Sidebar content -->
     </x-moonshine::layout.sidebar>
 
-    <x-moonshine::layout.div class="layout-page">
-        <x-moonshine::layout.content>
-            <!-- Main content -->
-        </x-moonshine::layout.content>
+    <x-moonshine::layout.div class="layout-main">
+        <x-moonshine::layout.div class="layout-page">
+            <x-moonshine::layout.content>
+                <!-- Main content -->
+            </x-moonshine::layout.content>
+        </x-moonshine::layout.div>
     </x-moonshine::layout.div>
 </x-moonshine::layout.wrapper>
 ```
+
+**Important Wrapper Structure:**
+
+TopBar uses specific CSS class wrappers for proper styling and functionality:
+
+1. **`menu-logo`** - Wrapper for the logo component
+2. **`menu menu--horizontal`** - Wrapper for the navigation menu (horizontal orientation)
+3. **`menu-actions`** - Wrapper for theme switcher, profile, and other action components
+4. **`menu-burger`** - Wrapper for the burger button
+5. **`menu-divider menu-divider--vertical`** - Optional vertical divider between action elements
 
 **⚠️ Important TopBar + Sidebar Layout:**
 When using TopBar together with Sidebar, the TopBar must be placed **inside the wrapper** as the **first child element**, positioned above the sidebar in the wrapper structure.
@@ -1374,17 +1426,113 @@ When using TopBar together with Sidebar, the TopBar must be placed **inside the 
 
 
 
-### Mobilebar (Mobile Navigation)
-**Purpose:** Mobile-specific navigation bar
+### MobileBar (Mobile Navigation)
+**Purpose:** Optional mobile-specific dropdown menu panel that allows separate control over mobile navigation
+
+The `MobileBar` component is used when you want to customize the mobile dropdown panel independently from your desktop navigation (TopBar or Sidebar). By default, mobile menus duplicate the content from TopBar or Sidebar, but MobileBar gives you full control over what appears in the mobile dropdown.
+
 ```blade
-<x-moonshine::layout.mobilebar>
-    <x-moonshine::layout.burger />
-    <x-moonshine::layout.logo
-        href="/"
-        :logo="'/images/logo-mobile.svg'"
-    />
-    <!-- Additional mobile components can be added here -->
-</x-moonshine::layout.mobilebar>
+<!-- Full MobileBar structure with all sections -->
+<x-moonshine::layout.mobile-bar>
+    <x-moonshine::layout.div class="menu-logo">
+        <x-moonshine::layout.logo
+            href="/"
+            logo="/logo.svg"
+            logo-small="/logo-small.svg"
+            :minimized="true"
+        />
+    </x-moonshine::layout.div>
+
+    <x-moonshine::layout.div class="menu menu--horizontal">
+        <x-moonshine::layout.divider label="Mobile bar" />
+
+        <x-moonshine::layout.menu
+            :top="true"
+            :elements="[
+                ['label' => 'Dashboard', 'url' => '/'],
+                ['label' => 'Section', 'url' => '/section']
+            ]"
+        />
+    </x-moonshine::layout.div>
+
+    <x-moonshine::layout.div class="menu-actions">
+        <div class="menu-divider menu-divider--vertical"></div>
+        <x-moonshine::layout.theme-switcher/>
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger mobile-bar />
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.mobile-bar>
+```
+
+**Important Wrapper Structure:**
+
+MobileBar uses the same wrapper structure as TopBar:
+
+1. **`menu-logo`** - Wrapper for the logo component
+2. **`menu menu--horizontal`** - Wrapper for the navigation menu (horizontal orientation)
+3. **`menu-actions`** - Wrapper for theme switcher, profile, and other action components
+4. **`menu-burger`** - Wrapper for the burger button
+5. **`menu-divider menu-divider--vertical`** - Optional vertical divider between action elements
+
+**Important Notes:**
+
+- **Optional component**: MobileBar is not required. If omitted, mobile menu will duplicate TopBar or Sidebar content
+- **Placement**: MobileBar must be placed **above** Sidebar and TopBar in the layout structure
+- **Use case**: Useful when desktop navigation (TopBar/Sidebar) differs from what should appear in mobile dropdown
+- **Burger attribute**: Burger inside MobileBar must have `mobile-bar` attribute
+
+**Example Scenario:**
+```blade
+<!-- Desktop shows TopBar menu, mobile shows different MobileBar menu -->
+<x-moonshine::layout.wrapper>
+    <!-- MobileBar for mobile devices (appears first) -->
+    <x-moonshine::layout.mobile-bar>
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo href="/" logo="/logo.svg"/>
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu menu--horizontal">
+            <x-moonshine::layout.menu
+                :elements="[
+                    ['label' => 'Home', 'url' => '/'],
+                    ['label' => 'Mobile-Only Menu', 'url' => '/mobile']
+                ]"
+            />
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger mobile-bar />
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.mobile-bar>
+
+    <!-- TopBar for desktop -->
+    <x-moonshine::layout.top-bar>
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo href="/" logo="/logo.svg"/>
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu menu--horizontal">
+            <x-moonshine::layout.menu
+                :elements="[
+                    ['label' => 'Dashboard', 'url' => '/dashboard'],
+                    ['label' => 'Analytics', 'url' => '/analytics']
+                ]"
+            />
+        </x-moonshine::layout.div>
+
+        <x-moonshine::layout.div class="menu-burger">
+            <x-moonshine::layout.burger topbar />
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.top-bar>
+
+    <!-- Main content -->
+    <x-moonshine::layout.div class="layout-main">
+        <x-moonshine::layout.div class="layout-page">
+            <!-- Page content -->
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.wrapper>
 ```
 
 ### Metrics (Metrics Display)
@@ -1568,9 +1716,10 @@ When using TopBar together with Sidebar, the TopBar must be placed **inside the 
 
 ### Menu (Navigation Menu)
 **Purpose:** Creating navigation menus
+
 ```blade
-<!-- Sidebar menu (with collapsible wrapper) -->
-<x-moonshine::layout.div class="menu" ::class="asideMenuOpen && '_is-opened'">
+<!-- Sidebar menu (vertical orientation) -->
+<x-moonshine::layout.div class="menu menu--vertical">
     <x-moonshine::layout.menu
         :elements="[
             ['label' => 'Dashboard', 'url' => '/', 'icon' => 'home'],
@@ -1580,22 +1729,29 @@ When using TopBar together with Sidebar, the TopBar must be placed **inside the 
     />
 </x-moonshine::layout.div>
 
-<!-- Top menu (no wrapper needed) -->
-<x-moonshine::layout.menu
-    :elements="[
-        ['label' => 'Home', 'url' => '/'],
-        ['label' => 'About', 'url' => '/about'],
-        ['label' => 'Contact', 'url' => '/contact']
-    ]"
-    :horizontal="true"
-/>
+<!-- Top menu (horizontal orientation) -->
+<x-moonshine::layout.div class="menu menu--horizontal">
+    <x-moonshine::layout.menu
+        :top="true"
+        :elements="[
+            ['label' => 'Home', 'url' => '/'],
+            ['label' => 'About', 'url' => '/about'],
+            ['label' => 'Contact', 'url' => '/contact']
+        ]"
+    />
+</x-moonshine::layout.div>
 ```
+
 **Parameters:**
 - `elements` (array) - menu items with label, url, and optional icon
-- `horizontal` (bool) - horizontal layout for top menus
+- `top` (bool) - indicates this is a top menu (for TopBar or MobileBar)
 
-**⚠️ Important Sidebar Menu Wrapper:**
-When menu is used inside a collapsible sidebar, it must be wrapped in `<x-moonshine::layout.div class="menu" ::class="asideMenuOpen && '_is-opened'">` for proper collapse functionality. Top menus don't require this wrapper.
+**⚠️ Important Menu Wrapper:**
+Menu component must always be wrapped in a div with appropriate CSS classes:
+- **Sidebar menu**: `<x-moonshine::layout.div class="menu menu--vertical">` - vertical orientation
+- **TopBar/MobileBar menu**: `<x-moonshine::layout.div class="menu menu--horizontal">` - horizontal orientation
+
+These wrappers are required for proper styling, collapse functionality, and responsive behavior.
 
 ### FlexibleRender (Dynamic Content)
 **Purpose:** Rendering dynamic content based on data
@@ -1882,7 +2038,7 @@ When menu is used inside a collapsible sidebar, it must be wrapped in `<x-moonsh
         <x-moonshine::layout.body>
             <x-moonshine::layout.wrapper>
                 <x-moonshine::layout.sidebar>
-                    <x-moonshine::layout.div class="menu" ::class="asideMenuOpen && '_is-opened'">
+                    <x-moonshine::layout.div class="menu">
                         <x-moonshine::layout.menu :elements="[
                             ['label' => 'Dashboard', 'url' => '/'],
                             ['label' => 'Users', 'url' => '/users'],
