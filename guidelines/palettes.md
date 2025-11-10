@@ -52,10 +52,31 @@ final class MyCustomPalette implements PaletteContract
 
 ### Registration
 
+**Method 1: In MoonShine Layout (Recommended)**
+
+Edit `app/MoonShine/Layouts/MoonShineLayout.php`:
+
+```php
+protected ?string $palette = \App\MoonShine\Palettes\MyCustomPalette::class;
+```
+
+**Method 2: In Config (Global)**
+
 Add to `config/moonshine.php`:
 
 ```php
 'palette' => \App\MoonShine\Palettes\MyCustomPalette::class,
+```
+
+**Method 3: For Blade Component Demos**
+
+In your route file:
+
+```php
+Route::get('/demo', function (ColorManagerContract $colorManager) {
+    $colorManager->palette(new MyCustomPalette);
+    return view('demo');
+});
 ```
 
 ## Color Keys Reference
@@ -401,14 +422,58 @@ After creating a palette, verify:
 5. Semantic colors are distinguishable
 6. No harsh color combinations that clash
 
-## File Location
+## File Location and Registration
+
+### 1. Create Palette File
 
 Store custom palettes in:
 ```
 app/MoonShine/Palettes/YourPaletteName.php
 ```
 
-Then register in `config/moonshine.php`:
+### 2. Register in MoonShine Layout
+
+Open `app/MoonShine/Layouts/MoonShineLayout.php` and set the `$palette` property:
+
+```php
+<?php
+
+namespace App\MoonShine\Layouts;
+
+use MoonShine\Laravel\Layouts\CompactLayout;
+
+final class MoonShineLayout extends CompactLayout
+{
+    // Set your custom palette here
+    protected ?string $palette = \App\MoonShine\Palettes\YourPaletteName::class;
+
+    // ... rest of the layout code
+}
+```
+
+### 3. Alternative: Register in Config (Global)
+
+You can also register globally in `config/moonshine.php`:
 ```php
 'palette' => \App\MoonShine\Palettes\YourPaletteName::class,
 ```
+
+**Note:** Layout-level registration (`MoonShineLayout.php`) takes precedence over config-level registration.
+
+### 4. Using Palette in Blade Component Demos
+
+When creating standalone Blade component demos (not part of MoonShine admin), you need to enable the palette in your route:
+
+```php
+use MoonShine\Contracts\ColorManager\ColorManagerContract;
+use App\MoonShine\Palettes\SpotifyPalette;
+
+Route::get('/spotify-demo', function (ColorManagerContract $colorManager) {
+    // Enable the palette for this demo page
+    $colorManager->palette(new SpotifyPalette);
+
+    return view('spotify-demo');
+});
+```
+
+This is necessary because Blade component demos exist outside the MoonShine admin panel context.

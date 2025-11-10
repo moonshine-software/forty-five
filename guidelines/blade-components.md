@@ -20,6 +20,12 @@ This document is designed for AI assistants that generate interfaces based on Mo
 - Place inside `<x-moonshine::layout.assets>` component
 - See [Assets Configuration](#critical-moonshine-assets-configuration) for details
 
+**4. ALWAYS add spacing between stacked components**
+- MoonShine components have NO margins by default
+- When placing multiple components vertically (one after another), they will appear merged together
+- **ALWAYS** use `<x-moonshine::line-break />` or `<x-moonshine::layout.divider />` between stacked components
+- See [Component Spacing](#component-spacing-critical) for examples
+
 ## Table of Contents
 
 ### Layout Components
@@ -82,7 +88,7 @@ This document is designed for AI assistants that generate interfaces based on Mo
 
 ### Utility & Special
 - [When](#when-conditional-rendering) - `<x-moonshine::when>`
-- [Title](#title-page-title) - `<x-moonshine::layout.title>`
+- [Title](#title-page-title) - `<x-moonshine::title>`
 - [Loader](#loader-loading-indicator) - `<x-moonshine::loader>`
 - [FlexibleRender](#flexiblerender-dynamic-content) - `<x-moonshine::flexible-render>`
 - [LineBreak](#linebreak-line-break) - `<x-moonshine::line-break>`
@@ -109,6 +115,120 @@ MoonShine uses **Heroicons** for all icon displays. All icons are available at: 
 - `icon="s.home"` - solid home icon
 - `icon="m.home"` - mini home icon
 - `icon="c.home"` - micro home icon
+
+## Component Spacing (CRITICAL)
+
+**⚠️ IMPORTANT:** MoonShine components have **NO margins by default**. When stacking components vertically, they will appear merged together without spacing.
+
+**Solution:** Use spacing components between stacked elements:
+- `<x-moonshine::line-break />` - Simple vertical spacing
+- `<x-moonshine::layout.divider />` - Visual divider line with spacing
+
+### ❌ WRONG: Components without spacing
+```blade
+<x-moonshine::layout.content>
+    <x-moonshine::card>
+        <h2>Card 1</h2>
+        <p>First card content</p>
+    </x-moonshine::card>
+
+    <x-moonshine::card>
+        <h2>Card 2</h2>
+        <p>Second card content</p>
+    </x-moonshine::card>
+
+    <x-moonshine::table>
+        <!-- Table content -->
+    </x-moonshine::table>
+</x-moonshine::layout.content>
+```
+**Result:** All components appear merged together with no visual separation.
+
+### ✅ CORRECT: Components with spacing
+```blade
+<x-moonshine::layout.content>
+    <x-moonshine::card>
+        <h2>Card 1</h2>
+        <p>First card content</p>
+    </x-moonshine::card>
+
+    <x-moonshine::line-break />
+
+    <x-moonshine::card>
+        <h2>Card 2</h2>
+        <p>Second card content</p>
+    </x-moonshine::card>
+
+    <x-moonshine::line-break />
+
+    <x-moonshine::table>
+        <!-- Table content -->
+    </x-moonshine::table>
+</x-moonshine::layout.content>
+```
+
+### Using Divider for Visual Separation
+```blade
+<x-moonshine::layout.content>
+    <x-moonshine::card>
+        <h2>User Statistics</h2>
+        <p>Overview of user data</p>
+    </x-moonshine::card>
+
+    <x-moonshine::layout.divider />
+
+    <x-moonshine::card>
+        <h2>Recent Activity</h2>
+        <p>Latest user actions</p>
+    </x-moonshine::card>
+</x-moonshine::layout.content>
+```
+
+### When to Use Spacing
+
+**ALWAYS use spacing when:**
+- Placing multiple cards vertically
+- Stacking tables
+- Adding forms after other components
+- Combining alerts with other content
+- Placing multiple modal triggers
+- Any time you have 2+ block-level components in sequence
+
+**NO spacing needed when:**
+- Components are inside Grid or Flex layouts (they handle spacing)
+- Components are in different sections/wrappers
+- Using a single component
+
+### Common Patterns
+
+**Multiple Cards:**
+```blade
+<x-moonshine::card>Card 1</x-moonshine::card>
+<x-moonshine::line-break />
+<x-moonshine::card>Card 2</x-moonshine::card>
+<x-moonshine::line-break />
+<x-moonshine::card>Card 3</x-moonshine::card>
+```
+
+**Alert + Content:**
+```blade
+<x-moonshine::alert type="info">Important notice</x-moonshine::alert>
+<x-moonshine::line-break />
+<x-moonshine::table>
+    <!-- Table content -->
+</x-moonshine::table>
+```
+
+**Form + Table:**
+```blade
+<x-moonshine::form name="search">
+    <!-- Form fields -->
+</x-moonshine::form>
+<x-moonshine::line-break />
+<x-moonshine::table>
+    <!-- Results table -->
+</x-moonshine::table>
+```
 
 ## Basic Template Structure
 
@@ -728,15 +848,21 @@ Use this method for simple text data without HTML or components:
             <td>
                 <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
                     <x-moonshine::link-button href="/users/1" class="btn-square">
-                        <x-moonshine::icon icon="eye"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="eye" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
 
                     <x-moonshine::link-button href="/users/1/edit" class="btn-square btn-secondary">
-                        <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="pencil" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
 
                     <x-moonshine::link-button href="/users/1/delete" class="btn-square btn-error">
-                        <x-moonshine::icon icon="trash"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="trash" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
                 </x-moonshine::layout.flex>
             </td>
@@ -754,15 +880,21 @@ Use this method for simple text data without HTML or components:
             <td>
                 <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
                     <x-moonshine::link-button href="/users/2" class="btn-square">
-                        <x-moonshine::icon icon="eye"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="eye" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
 
                     <x-moonshine::link-button href="/users/2/edit" class="btn-square btn-secondary">
-                        <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="pencil" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
 
                     <x-moonshine::link-button href="/users/2/delete" class="btn-square btn-error">
-                        <x-moonshine::icon icon="trash"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="trash" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
                 </x-moonshine::layout.flex>
             </td>
@@ -793,19 +925,34 @@ Use this method for simple text data without HTML or components:
 ```
 
 **Action Buttons (Icon Only):**
+
+**IMPORTANT:** When button contains ONLY an icon (no text):
+- ALWAYS add `btn-square` class - makes button square-shaped
+- Add `btn-secondary` for edit actions
+- Add `btn-error` for delete/destructive actions
+
 ```blade
 <td>
     <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+        <!-- View button - icon only, use btn-square -->
         <x-moonshine::link-button href="/view" class="btn-square">
-            <x-moonshine::icon icon="eye"></x-moonshine::icon>
+            <x-slot:icon>
+                <x-moonshine::icon icon="eye" />
+            </x-slot:icon>
         </x-moonshine::link-button>
 
+        <!-- Edit button - icon only, use btn-square + btn-secondary -->
         <x-moonshine::link-button href="/edit" class="btn-square btn-secondary">
-            <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+            <x-slot:icon>
+                <x-moonshine::icon icon="pencil" />
+            </x-slot:icon>
         </x-moonshine::link-button>
 
+        <!-- Delete button - icon only, use btn-square + btn-error -->
         <x-moonshine::link-button href="/delete" class="btn-square btn-error">
-            <x-moonshine::icon icon="trash"></x-moonshine::icon>
+            <x-slot:icon>
+                <x-moonshine::icon icon="trash" />
+            </x-slot:icon>
         </x-moonshine::link-button>
     </x-moonshine::layout.flex>
 </td>
@@ -816,12 +963,16 @@ Use this method for simple text data without HTML or components:
 <td>
     <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
         <x-moonshine::link-button href="/edit" class="btn-sm btn-secondary">
-            <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+            <x-slot:icon>
+                <x-moonshine::icon icon="pencil" />
+            </x-slot:icon>
             Edit
         </x-moonshine::link-button>
 
         <x-moonshine::link-button href="/delete" class="btn-sm btn-error">
-            <x-moonshine::icon icon="trash"></x-moonshine::icon>
+            <x-slot:icon>
+                <x-moonshine::icon icon="trash" />
+            </x-slot:icon>
             Delete
         </x-moonshine::link-button>
     </x-moonshine::layout.flex>
@@ -869,11 +1020,15 @@ Use this method for simple text data without HTML or components:
             <td>
                 <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
                     <x-moonshine::link-button href="/users/{{ $user->id }}" class="btn-square">
-                        <x-moonshine::icon icon="eye"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="eye" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
 
                     <x-moonshine::link-button href="/users/{{ $user->id }}/edit" class="btn-square btn-secondary">
-                        <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+                        <x-slot:icon>
+                            <x-moonshine::icon icon="pencil" />
+                        </x-slot:icon>
                     </x-moonshine::link-button>
                 </x-moonshine::layout.flex>
             </td>
@@ -1325,6 +1480,9 @@ logo="https://example.com/logo.svg"
 
 ### Link (Styled Links)
 **Purpose:** Creating styled links with various appearances
+
+**IMPORTANT:** The `icon` is a **slot**, not an attribute. Use `<x-slot:icon>` with `<x-moonshine::icon>` component inside.
+
 ```blade
 <!-- Basic link button -->
 <x-moonshine::link-button href="/dashboard">
@@ -1341,24 +1499,93 @@ logo="https://example.com/logo.svg"
     Settings
 </x-moonshine::link-button>
 
-<!-- Link with icon -->
-<x-moonshine::link-button href="https://external-site.com">
-    External Link
-    <x-moonshine::icon icon="arrow-top-right-on-square" />
+<!-- Link button with icon - CORRECT WAY -->
+<x-moonshine::link-button href="/create">
+    <x-slot:icon>
+        <x-moonshine::icon icon="plus" />
+    </x-slot:icon>
+    Create User
 </x-moonshine::link-button>
+
+<!-- Link button with @click event and icon -->
+<x-moonshine::link-button @click.prevent="toggleModal">
+    <x-slot:icon>
+        <x-moonshine::icon icon="s.plus" />
+    </x-slot:icon>
+    Create User
+</x-moonshine::link-button>
+
+<!-- ❌ WRONG: Don't use icon as attribute -->
+<!-- <x-moonshine::link-button icon="plus" href="/create"> -->
 ```
+
 **Parameters:**
-- `href` (string) - link URL
+- `href` (string) - link URL (optional if using @click)
 - `filled` (bool) - filled button style
 - Standard link attributes: `target`, `title`, etc.
+- Standard Vue attributes: `@click`, `@submit`, etc.
+
+**Slots:**
+- `icon` - for adding an icon using `<x-moonshine::icon>` component
 
 **Link Types:**
-- **link-button**: Styled as button
+- **link-button**: Styled as button (supports icon slot)
 - **link-native**: Natural link appearance
 
-### OffCanvas (Side Panel)
-**Purpose:** Creating slide-out side panels
+**Usage Notes:**
+- Icons must be added via `<x-slot:icon>` slot, NOT as an attribute
+- Can be used with Vue event handlers like `@click.prevent`
+- Use `@click.prevent` to prevent default link behavior when opening modals
+
+**Styling Classes:**
+- **`btn-square`** - Use when button contains ONLY an icon (no text). Makes the button square-shaped for better appearance
+- **`btn-secondary`** - Secondary action styling (e.g., edit buttons)
+- **`btn-error`** - Error/danger styling. Use for delete/destructive actions
+- **`btn-sm`** - Small button size
+
+**Examples with classes:**
 ```blade
+<!-- Icon-only button - ALWAYS use btn-square -->
+<x-moonshine::link-button href="/view" class="btn-square">
+    <x-slot:icon>
+        <x-moonshine::icon icon="eye" />
+    </x-slot:icon>
+</x-moonshine::link-button>
+
+<!-- Edit button - use btn-square + btn-secondary -->
+<x-moonshine::link-button href="/edit" class="btn-square btn-secondary">
+    <x-slot:icon>
+        <x-moonshine::icon icon="pencil" />
+    </x-slot:icon>
+</x-moonshine::link-button>
+
+<!-- Delete button - use btn-square + btn-error -->
+<x-moonshine::link-button href="/delete" class="btn-square btn-error">
+    <x-slot:icon>
+        <x-moonshine::icon icon="trash" />
+    </x-slot:icon>
+</x-moonshine::link-button>
+
+<!-- Button with icon AND text - NO btn-square needed -->
+<x-moonshine::link-button href="/create" class="btn-primary">
+    <x-slot:icon>
+        <x-moonshine::icon icon="plus" />
+    </x-slot:icon>
+    Create New
+</x-moonshine::link-button>
+```
+
+### OffCanvas (Side Panel)
+**Purpose:** Creating slide-out side panels. **Perfect for filters, forms, settings, and navigation.**
+
+**Common Use Cases:**
+- 🔍 **Filters** - Ideal for search filters and data filtering forms
+- ⚙️ **Settings** - Configuration panels
+- 📋 **Forms** - Data entry forms
+- 🧭 **Navigation** - Mobile menus and navigation
+
+```blade
+<!-- Basic panel -->
 <x-moonshine::off-canvas
     title="Settings Panel"
     :left="false"
@@ -1376,7 +1603,28 @@ logo="https://example.com/logo.svg"
     </div>
 </x-moonshine::off-canvas>
 
-<!-- Left-positioned panel -->
+<!-- Filters panel - PERFECT USE CASE -->
+<x-moonshine::off-canvas title="Filters" :wide="true">
+    <x-slot:toggler>
+        <x-moonshine::icon icon="funnel" />
+        Filter Results
+    </x-slot:toggler>
+
+    <x-moonshine::form name="filters-form">
+        <x-moonshine::form.input name="search" placeholder="Search..." />
+        <x-moonshine::form.select name="status" placeholder="Status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </x-moonshine::form.select>
+        <x-moonshine::form.select name="role" placeholder="Role">
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+        </x-moonshine::form.select>
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+    </x-moonshine::form>
+</x-moonshine::off-canvas>
+
+<!-- Left-positioned navigation panel -->
 <x-moonshine::off-canvas title="Navigation" :left="true">
     <x-slot:toggler>
         <x-moonshine::icon icon="bars-3" />
@@ -1390,21 +1638,28 @@ logo="https://example.com/logo.svg"
     </nav>
 </x-moonshine::off-canvas>
 
-<!-- Wide panel -->
-<x-moonshine::off-canvas title="Form Panel" :wide="true">
-    <x-slot:toggler>Edit Form</x-slot:toggler>
+<!-- Wide form panel -->
+<x-moonshine::off-canvas title="Edit User" :wide="true">
+    <x-slot:toggler>Edit User</x-slot:toggler>
 
     <x-moonshine::form name="edit-form">
-        <!-- Form content -->
+        <!-- Form fields here -->
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </x-moonshine::form>
 </x-moonshine::off-canvas>
 ```
 **Parameters:**
 - `title` (string) - panel title
 - `left` (bool) - position on left side (default: right)
-- `wide` (bool) - wider panel
+- `wide` (bool) - wider panel (recommended for filters and forms)
 - `full` (bool) - full width panel
 - `open` (bool) - open by default
+
+**Best Practices:**
+- Use `:wide="true"` for filters and forms - provides more space for multiple fields
+- Use `:left="true"` for navigation menus - follows common UX patterns
+- Keep the default right position for settings and general panels
+- Add appropriate icons to toggler for better UX (e.g., `funnel` for filters, `bars-3` for menu)
 
 **Important Toggler Slot Note:**
 ⚠️ The `toggler` slot content is automatically wrapped in a `<button>` element by MoonShine. **Do not add an additional button element inside the toggler slot** - just provide the text or icon content directly.
@@ -1920,34 +2175,49 @@ MobileBar uses the same wrapper structure as TopBar:
 - `collapsed` (bool) - start in collapsed state
 
 ### Title (Page Title)
-**Purpose:** Setting page titles and metadata
+**Purpose:** Renders an `<h1>` heading for the page. Must be used inside `<x-moonshine::layout.content>`.
+
+**IMPORTANT:** This component generates an `<h1>` tag, NOT a `<title>` meta tag.
+
 ```blade
-<!-- Basic title -->
-<x-moonshine::layout.title>
-    Dashboard Overview
-</x-moonshine::layout.title>
+<!-- Basic title (inside content component) -->
+<x-moonshine::layout.content>
+    <x-moonshine::title>
+        Dashboard Overview
+    </x-moonshine::title>
+
+    <!-- Your page content here -->
+</x-moonshine::layout.content>
 
 <!-- Title with subtitle -->
-<x-moonshine::layout.title
-    subtitle="Manage your application data"
->
-    Admin Panel
-</x-moonshine::layout.title>
+<x-moonshine::layout.content>
+    <x-moonshine::title subtitle="Manage your application data">
+        Admin Panel
+    </x-moonshine::title>
+</x-moonshine::layout.content>
 
-<!-- Title with breadcrumbs -->
-<x-moonshine::layout.title>
-    User Management
-    <x-slot:breadcrumbs>
-        <x-moonshine::breadcrumbs :items="[
-            '/' => 'Home',
-            '/admin' => 'Admin',
-            '#' => 'Users'
-        ]" />
-    </x-slot:breadcrumbs>
-</x-moonshine::layout.title>
+<!-- Title with icon in slot -->
+<x-moonshine::layout.content>
+    <x-moonshine::title>
+        User Management
+        <x-slot:slot>
+            <x-moonshine::icon icon="users" />
+        </x-slot:slot>
+    </x-moonshine::title>
+</x-moonshine::layout.content>
 ```
+
 **Parameters:**
-- `subtitle` (string) - optional subtitle
+- `subtitle` (string) - optional subtitle text below the main title
+
+**Slots:**
+- `slot` - for adding small HTML elements like icons next to the title (NOT for breadcrumbs)
+
+**Usage Notes:**
+- Always use inside `<x-moonshine::layout.content>`
+- Generates semantic `<h1>` heading
+- The default slot is for adding visual elements (icons, badges, etc.)
+- DO NOT use the slot for breadcrumbs - breadcrumbs are separate components
 
 ### Loader (Loading Indicator)
 **Purpose:** Displaying loading states
