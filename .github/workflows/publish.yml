@@ -23,7 +23,10 @@ jobs:
       - name: Extract version from tag
         id: get_version
         run: |
-          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          # Remove refs/tags/ prefix
+          TAG_VERSION=${GITHUB_REF#refs/tags/}
+          # Remove v prefix if present
+          TAG_VERSION=${TAG_VERSION#v}
           echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
           echo "Publishing version: $TAG_VERSION"
 
