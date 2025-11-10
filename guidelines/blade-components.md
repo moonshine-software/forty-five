@@ -9,18 +9,23 @@ This document is designed for AI assistants that generate interfaces based on Mo
 - Your Blade file must start with `<x-moonshine::layout>`, NOT with `<!DOCTYPE html>`
 - See [Basic Template Structure](#basic-template-structure) for correct usage
 
-**2. ALWAYS use required CSS wrapper classes**
+**2. ALWAYS maintain the correct layout structure**
+- **CRITICAL:** Always preserve the `layout-main` and `layout-page` wrapper structure
+- This structure is essential for proper layout functionality and styling
+- See [Layout Structure](#layout-structure-critical) for details
+
+**3. ALWAYS use required CSS wrapper classes**
 - Logo must be wrapped in `<x-moonshine::layout.div class="menu-logo">` and must have `logo` attribute with path to image
 - Menu must be wrapped in `<x-moonshine::layout.div class="menu menu--vertical">` (Sidebar) or `<x-moonshine::layout.div class="menu menu--horizontal">` (TopBar/MobileBar)
 - Burger must be wrapped in `<x-moonshine::layout.div class="menu-burger">` and have location attribute (`sidebar`, `topbar`, or `mobile-bar`)
 - Actions must be wrapped in `<x-moonshine::layout.div class="menu-actions">`
 
-**3. ALWAYS include MoonShine assets**
+**4. ALWAYS include MoonShine assets**
 - Must include: `@vite(['resources/css/main.css', 'resources/js/app.js'], 'vendor/moonshine')`
 - Place inside `<x-moonshine::layout.assets>` component
 - See [Assets Configuration](#critical-moonshine-assets-configuration) for details
 
-**4. ALWAYS add spacing between stacked components**
+**5. ALWAYS add spacing between stacked components**
 - MoonShine components have NO margins by default
 - When placing multiple components vertically (one after another), they will appear merged together
 - **ALWAYS** use `<x-moonshine::line-break />` or `<x-moonshine::layout.divider />` between stacked components
@@ -115,6 +120,115 @@ MoonShine uses **Heroicons** for all icon displays. All icons are available at: 
 - `icon="s.home"` - solid home icon
 - `icon="m.home"` - mini home icon
 - `icon="c.home"` - micro home icon
+
+## Layout Structure (CRITICAL)
+
+**⚠️ EXTREMELY IMPORTANT:** MoonShine requires a specific wrapper structure with `layout-main` and `layout-page` classes. **NEVER skip or modify this structure** - it is essential for proper layout functionality, styling, and responsive behavior.
+
+### Required Structure
+
+```blade
+<x-moonshine::layout.wrapper>
+    <!-- Sidebar (optional, for sidebar layouts) -->
+    <x-moonshine::layout.sidebar :collapsed="true">
+        <!-- Sidebar content: logo, menu, theme switcher, etc. -->
+    </x-moonshine::layout.sidebar>
+
+    <!-- CRITICAL: layout-main wrapper -->
+    <x-moonshine::layout.div class="layout-main">
+        <!-- CRITICAL: layout-page wrapper -->
+        <x-moonshine::layout.div class="layout-page">
+            <!-- Header section -->
+            <x-moonshine::layout.header>
+                <!-- Header content: breadcrumbs, page title, etc. -->
+            </x-moonshine::layout.header>
+
+            <!-- Main content section -->
+            <x-moonshine::layout.content>
+                <!-- Your page content goes here -->
+            </x-moonshine::layout.content>
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.wrapper>
+```
+
+### Why This Structure Is Critical
+
+1. **CSS Dependencies** - MoonShine's CSS relies on these classes for proper spacing, positioning, and responsive behavior
+2. **Sidebar Functionality** - The sidebar collapse/expand mechanism depends on this structure
+3. **Mobile Responsiveness** - Mobile layouts and transitions require these wrappers
+4. **Content Alignment** - Proper content width and centering depend on this hierarchy
+
+### Common Patterns
+
+**With Sidebar (Most Common):**
+```blade
+<x-moonshine::layout.wrapper>
+    <x-moonshine::layout.sidebar>
+        <!-- Sidebar navigation -->
+    </x-moonshine::layout.sidebar>
+
+    <x-moonshine::layout.div class="layout-main">
+        <x-moonshine::layout.div class="layout-page">
+            <x-moonshine::layout.header>
+                <x-moonshine::breadcrumbs :items="['/' => 'Home']" />
+            </x-moonshine::layout.header>
+            <x-moonshine::layout.content>
+                <!-- Content here -->
+            </x-moonshine::layout.content>
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.wrapper>
+```
+
+**With TopBar (No Sidebar):**
+```blade
+<x-moonshine::layout.wrapper>
+    <x-moonshine::layout.top-bar>
+        <!-- Top navigation -->
+    </x-moonshine::layout.top-bar>
+
+    <x-moonshine::layout.div class="layout-main">
+        <x-moonshine::layout.div class="layout-page">
+            <x-moonshine::layout.header>
+                <!-- Page header -->
+            </x-moonshine::layout.header>
+            <x-moonshine::layout.content>
+                <!-- Content here -->
+            </x-moonshine::layout.content>
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.wrapper>
+```
+
+### ❌ WRONG: Missing or Incorrect Structure
+
+```blade
+<!-- ❌ WRONG: Missing layout-main and layout-page -->
+<x-moonshine::layout.wrapper>
+    <x-moonshine::layout.sidebar>...</x-moonshine::layout.sidebar>
+    <x-moonshine::layout.content>
+        <!-- This will break styling and responsiveness -->
+    </x-moonshine::layout.content>
+</x-moonshine::layout.wrapper>
+
+<!-- ❌ WRONG: Incorrect class names -->
+<x-moonshine::layout.wrapper>
+    <x-moonshine::layout.div class="main-layout">  <!-- Wrong class -->
+        <x-moonshine::layout.div class="page-layout">  <!-- Wrong class -->
+            <x-moonshine::layout.content>...</x-moonshine::layout.content>
+        </x-moonshine::layout.div>
+    </x-moonshine::layout.div>
+</x-moonshine::layout.wrapper>
+```
+
+### Key Rules
+
+1. **ALWAYS use `class="layout-main"`** for the outer content wrapper
+2. **ALWAYS use `class="layout-page"`** for the inner content wrapper
+3. **ALWAYS maintain this hierarchy**: wrapper → layout-main → layout-page → header/content
+4. **NEVER skip these wrappers** even if it seems they do nothing
+5. **NEVER change the class names** - MoonShine CSS depends on these exact names
 
 ## Component Spacing (CRITICAL)
 
