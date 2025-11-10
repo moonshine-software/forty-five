@@ -1720,8 +1720,7 @@ logo="https://example.com/logo.svg"
 <!-- Filters panel - PERFECT USE CASE -->
 <x-moonshine::off-canvas title="Filters" :wide="true">
     <x-slot:toggler>
-        <x-moonshine::icon icon="funnel" />
-        Filter Results
+        Filters
     </x-slot:toggler>
 
     <x-moonshine::form name="filters-form">
