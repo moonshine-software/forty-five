@@ -2,6 +2,24 @@
 
 This document is designed for AI assistants that generate interfaces based on MoonShine components. All components use the `x-moonshine::` prefix in Blade templates.
 
+## ⚠️ CRITICAL RULES
+
+**1. NEVER duplicate HTML tags**
+- MoonShine components automatically generate `<!DOCTYPE html>`, `<html>`, `<head>`, and `<body>` tags
+- Your Blade file must start with `<x-moonshine::layout>`, NOT with `<!DOCTYPE html>`
+- See [Basic Template Structure](#basic-template-structure) for correct usage
+
+**2. ALWAYS use required CSS wrapper classes**
+- Logo must be wrapped in `<x-moonshine::layout.div class="menu-logo">` and must have `logo` attribute with path to image
+- Menu must be wrapped in `<x-moonshine::layout.div class="menu menu--vertical">` (Sidebar) or `<x-moonshine::layout.div class="menu menu--horizontal">` (TopBar/MobileBar)
+- Burger must be wrapped in `<x-moonshine::layout.div class="menu-burger">` and have location attribute (`sidebar`, `topbar`, or `mobile-bar`)
+- Actions must be wrapped in `<x-moonshine::layout.div class="menu-actions">`
+
+**3. ALWAYS include MoonShine assets**
+- Must include: `@vite(['resources/css/main.css', 'resources/js/app.js'], 'vendor/moonshine')`
+- Place inside `<x-moonshine::layout.assets>` component
+- See [Assets Configuration](#critical-moonshine-assets-configuration) for details
+
 ## Table of Contents
 
 ### Layout Components
@@ -118,6 +136,49 @@ MoonShine uses **Heroicons** for all icon displays. All icons are available at: 
                     </x-moonshine::layout.div>
                 </x-moonshine::layout.div>
             </x-moonshine::layout.wrapper>
+        </x-moonshine::layout.body>
+    </x-moonshine::layout.html>
+</x-moonshine::layout>
+```
+
+**⚠️ CRITICAL: Do NOT Duplicate HTML Tags**
+
+The MoonShine layout components **automatically generate** HTML document structure:
+
+- `<x-moonshine::layout.html>` generates `<!DOCTYPE html>` and `<html>` tags
+- `<x-moonshine::layout.head>` generates `<head>` tags
+- `<x-moonshine::layout.body>` generates `<body>` tags
+
+**❌ WRONG - Do NOT do this:**
+```blade
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page Title</title>
+    <!-- This creates nested HTML tags! -->
+    <x-moonshine::layout.html :with-alpine-js="true">
+        <x-moonshine::layout.head>
+            <!-- ... -->
+        </x-moonshine::layout.head>
+    </x-moonshine::layout.html>
+</head>
+</html>
+```
+
+**✅ CORRECT - Start directly with MoonShine components:**
+```blade
+<x-moonshine::layout>
+    <x-moonshine::layout.html :with-alpine-js="true" :with-themes="true">
+        <x-moonshine::layout.head>
+            <x-moonshine::layout.meta name="csrf-token" :content="csrf_token()"/>
+            <x-moonshine::layout.favicon />
+            <x-moonshine::layout.assets>
+                @vite(['resources/css/main.css', 'resources/js/app.js'], 'vendor/moonshine')
+            </x-moonshine::layout.assets>
+        </x-moonshine::layout.head>
+        <x-moonshine::layout.body>
+            <!-- Your content -->
         </x-moonshine::layout.body>
     </x-moonshine::layout.html>
 </x-moonshine::layout>
@@ -341,12 +402,14 @@ If you can't use automatic publishing, configure manually:
 Sidebar uses specific CSS class wrappers for proper styling and functionality:
 
 1. **`menu-header`** - Container for the top section of sidebar (logo, actions, burger)
-2. **`menu-logo`** - Wrapper for the logo component
+2. **`menu-logo`** - Wrapper for the logo component (logo must have `logo="/path/to/logo.svg"` attribute)
 3. **`menu-actions`** - Wrapper for theme switcher, notifications, or other action components
-4. **`menu-burger`** - Wrapper for the burger button
+4. **`menu-burger`** - Wrapper for the burger button (burger must have `sidebar` attribute)
 5. **`menu menu--vertical`** - Wrapper for the navigation menu (vertical orientation)
 
 These wrappers are **required** for proper alignment, spacing, and responsive behavior.
+
+**⚠️ CRITICAL:** Logo component **must** have the `logo` attribute with a path to the image file, otherwise it will cause an error.
 
 ### Header (Top Header)
 **Purpose:** Creating top page header with navigation
@@ -596,110 +659,287 @@ These wrappers are **required** for proper alignment, spacing, and responsive be
 
 ### Table (Data Table)
 **Purpose:** Displaying tabular data
+
+There are two ways to create tables in MoonShine: using arrays (simple data) or using slots (HTML content and components).
+
+#### Method 1: Array-based Tables (Simple Data)
+
+Use this method for simple text data without HTML or components:
+
 ```blade
 <x-moonshine::table
-    :columns="['#', 'Name', 'Email', 'Actions']"
+    :columns="['#', 'Name', 'Email', 'Role', 'Date']"
     :values="[
-        [1, 'John Doe', 'john@example.com', 'Edit'],
-        [2, 'Jane Smith', 'jane@example.com', 'Edit']
+        [1, 'John Doe', 'john@example.com', 'Admin', '01.01.2024'],
+        [2, 'Jane Smith', 'jane@example.com', 'Editor', '05.01.2024'],
+        [3, 'Peter Jones', 'peter@example.com', 'User', '10.01.2024']
     ]"
     :simple="false"
     :notfound="true"
 >
 </x-moonshine::table>
 ```
+
 **Parameters:**
 - `columns` (array) - column headers
-- `values` (array) - table data
+- `values` (array) - table data (plain text only)
 - `simple` (bool) - simplified view
 - `notfound` (bool) - enable "no data found" alert when values array is empty
 
-**NotFound Parameter Behavior:**
+**⚠️ Limitations of Array-based Tables:**
+- Cannot use HTML tags in values
+- Cannot use MoonShine components (badges, buttons, icons)
+- Cannot use complex layouts
+- Limited styling options
+
+#### Method 2: Slot-based Tables (HTML & Components)
+
+**⚠️ RECOMMENDED:** Use this method when you need:
+- HTML content in cells
+- MoonShine components (badges, buttons, icons)
+- Action buttons
+- Complex cell layouts
+- Custom styling
+
 ```blade
-<!-- When notfound="true" and values is empty, shows alert -->
-<x-moonshine::table
-    :columns="['Name', 'Email']"
-    :values="[]"
-    :notfound="true"
->
+<x-moonshine::table>
+    <x-slot:thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </x-slot:thead>
+
+    <x-slot:tbody>
+        <tr>
+            <td>1</td>
+            <td>Ivan Ivanov</td>
+            <td>ivan@example.com</td>
+            <td>Admin</td>
+            <td>01.01.2024</td>
+            <td>
+                <x-moonshine::badge color="success">Active</x-moonshine::badge>
+            </td>
+            <td>
+                <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+                    <x-moonshine::link-button href="/users/1" class="btn-square">
+                        <x-moonshine::icon icon="eye"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+
+                    <x-moonshine::link-button href="/users/1/edit" class="btn-square btn-secondary">
+                        <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+
+                    <x-moonshine::link-button href="/users/1/delete" class="btn-square btn-error">
+                        <x-moonshine::icon icon="trash"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+                </x-moonshine::layout.flex>
+            </td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>Maria Petrova</td>
+            <td>maria@example.com</td>
+            <td>Editor</td>
+            <td>05.01.2024</td>
+            <td>
+                <x-moonshine::badge color="warning">Pending</x-moonshine::badge>
+            </td>
+            <td>
+                <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+                    <x-moonshine::link-button href="/users/2" class="btn-square">
+                        <x-moonshine::icon icon="eye"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+
+                    <x-moonshine::link-button href="/users/2/edit" class="btn-square btn-secondary">
+                        <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+
+                    <x-moonshine::link-button href="/users/2/delete" class="btn-square btn-error">
+                        <x-moonshine::icon icon="trash"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+                </x-moonshine::layout.flex>
+            </td>
+        </tr>
+    </x-slot:tbody>
+
+    <x-slot:tfoot>
+        <!-- Optional footer content -->
+    </x-slot:tfoot>
 </x-moonshine::table>
-<!-- Result: Shows "No data found" alert instead of empty table -->
+```
 
-<!-- When notfound="false" and values is empty, shows empty table -->
-<x-moonshine::table
-    :columns="['Name', 'Email']"
-    :values="[]"
-    :notfound="false"
->
+**Slot-based Table Structure:**
+- `thead` slot - table header with `<tr>` and `<th>` tags
+- `tbody` slot - table body with `<tr>` and `<td>` tags
+- `tfoot` slot - optional table footer
+
+**Common Components in Slot-based Tables:**
+
+**Status Badges:**
+```blade
+<td>
+    <x-moonshine::badge color="success">Active</x-moonshine::badge>
+    <x-moonshine::badge color="error">Blocked</x-moonshine::badge>
+    <x-moonshine::badge color="warning">Pending</x-moonshine::badge>
+    <x-moonshine::badge color="info">Review</x-moonshine::badge>
+</td>
+```
+
+**Action Buttons (Icon Only):**
+```blade
+<td>
+    <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+        <x-moonshine::link-button href="/view" class="btn-square">
+            <x-moonshine::icon icon="eye"></x-moonshine::icon>
+        </x-moonshine::link-button>
+
+        <x-moonshine::link-button href="/edit" class="btn-square btn-secondary">
+            <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+        </x-moonshine::link-button>
+
+        <x-moonshine::link-button href="/delete" class="btn-square btn-error">
+            <x-moonshine::icon icon="trash"></x-moonshine::icon>
+        </x-moonshine::link-button>
+    </x-moonshine::layout.flex>
+</td>
+```
+
+**Action Buttons (With Text):**
+```blade
+<td>
+    <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+        <x-moonshine::link-button href="/edit" class="btn-sm btn-secondary">
+            <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+            Edit
+        </x-moonshine::link-button>
+
+        <x-moonshine::link-button href="/delete" class="btn-sm btn-error">
+            <x-moonshine::icon icon="trash"></x-moonshine::icon>
+            Delete
+        </x-moonshine::link-button>
+    </x-moonshine::layout.flex>
+</td>
+```
+
+**Boolean Status:**
+```blade
+<td>
+    <x-moonshine::boolean :value="true" />
+</td>
+```
+
+**Images/Avatars:**
+```blade
+<td>
+    <img src="/avatar.jpg" alt="User" class="w-10 h-10 rounded-full">
+</td>
+```
+
+**Dynamic Tables with Blade Loop:**
+```blade
+<x-moonshine::table>
+    <x-slot:thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </x-slot:thead>
+
+    <x-slot:tbody>
+        @foreach($users as $user)
+        <tr>
+            <td>{{ $user->id }}</td>
+            <td>{{ $user->name }}</td>
+            <td>{{ $user->email }}</td>
+            <td>
+                <x-moonshine::badge :color="$user->is_active ? 'success' : 'error'">
+                    {{ $user->is_active ? 'Active' : 'Inactive' }}
+                </x-moonshine::badge>
+            </td>
+            <td>
+                <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+                    <x-moonshine::link-button href="/users/{{ $user->id }}" class="btn-square">
+                        <x-moonshine::icon icon="eye"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+
+                    <x-moonshine::link-button href="/users/{{ $user->id }}/edit" class="btn-square btn-secondary">
+                        <x-moonshine::icon icon="pencil"></x-moonshine::icon>
+                    </x-moonshine::link-button>
+                </x-moonshine::layout.flex>
+            </td>
+        </tr>
+        @endforeach
+    </x-slot:tbody>
 </x-moonshine::table>
-<!-- Result: Shows table headers with no rows -->
 ```
 
-**⚠️ Best Practices for Table Data:**
+**Empty State Handling:**
+```blade
+<x-moonshine::table>
+    <x-slot:thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+    </x-slot:thead>
 
-**Backend Data Formation:**
-It's recommended to prepare `values` array on the backend side rather than in Blade templates for better performance and maintainability:
-
-```php
-// Controller
-public function index()
-{
-    $users = User::all()->map(function ($user) {
-        return [
-            $user->id,
-            $user->name,
-            $user->email,
-            $user->created_at->format('d.m.Y')
-        ];
-    })->toArray();
-
-    return view('users.index', compact('users'));
-}
+    <x-slot:tbody>
+        @forelse($users as $user)
+        <tr>
+            <td>{{ $user->id }}</td>
+            <td>{{ $user->name }}</td>
+            <td>{{ $user->email }}</td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="3" class="text-center">
+                <x-moonshine::alert type="info">
+                    No users found
+                </x-moonshine::alert>
+            </td>
+        </tr>
+        @endforelse
+    </x-slot:tbody>
+</x-moonshine::table>
 ```
 
-**Action Buttons in Tables:**
-For tables with action buttons, use class-based component representations with ActionButton components:
+**Best Practices:**
 
-```php
-// Single button
-[
-    $user->id,
-    $user->name,
-    $user->email,
-    ActionButton::make('Edit', route('users.edit', $user))
-        ->icon('pencil')
-        ->primary()
-]
+1. **Use slots when you need:**
+   - Badges, buttons, icons, or any MoonShine components
+   - HTML formatting in cells
+   - Action buttons with icons
+   - Complex cell layouts
+   - Dynamic content with Blade directives
 
-// Multiple buttons - wrap in Preview or Fieldset
-[
-    $user->id,
-    $user->name,
-    $user->email,
-    Preview::make()->fields([
-        ActionButton::make('Edit', route('users.edit', $user))->icon('pencil'),
-        ActionButton::make('Delete', route('users.destroy', $user))->icon('trash')->warning()
-    ])
-]
+2. **Use arrays when you have:**
+   - Simple text data only
+   - No need for styling or components
+   - Static data that doesn't change
 
-// Alternative with Fieldset
-[
-    $user->id,
-    $user->name,
-    $user->email,
-    Fieldset::make()->fields([
-        ActionButton::make('View', route('users.show', $user))->icon('eye'),
-        ActionButton::make('Edit', route('users.edit', $user))->icon('pencil'),
-        ActionButton::make('Delete', route('users.destroy', $user))->icon('trash')
-    ])
-]
-```
+3. **Action buttons styling:**
+   - Use `btn-square` class for icon-only buttons
+   - Use `btn-sm` for buttons with text
+   - Wrap multiple buttons in `<x-moonshine::layout.flex>` with `gap-2` class
+   - Use semantic colors: `btn-secondary` (edit), `btn-error` (delete), default (view)
 
-This approach provides:
-- Better type safety and IDE support
-- Proper action handling and routing
-- Consistent styling and behavior
-- Easier maintenance and testing
+4. **Always wrap action buttons in flex container:**
+   ```blade
+   <x-moonshine::layout.flex justify-align="end" without-space class="gap-2">
+       <!-- buttons here -->
+   </x-moonshine::layout.flex>
+   ```
 
 ### Form (Form)
 **Purpose:** Creating forms
@@ -991,43 +1231,58 @@ This approach provides:
 
 ### Logo (Brand Logo)
 **Purpose:** Displaying brand logo with automatic responsive behavior
+
+**⚠️ IMPORTANT:** The `logo` parameter is **REQUIRED**. You must provide a path to the logo image file.
+
 ```blade
 <!-- Basic logo -->
 <x-moonshine::layout.logo
     href="/"
-    :logo="'/images/logo.svg'"
+    logo="/images/logo.svg"
 />
 
 <!-- Logo with small version for mobile/minimized sidebar -->
 <x-moonshine::layout.logo
     href="/"
-    :logo="'/images/logo.svg'"
-    :logoSmall="'/images/logo-small.svg'"
+    logo="/images/logo.svg"
+    logo-small="/images/logo-small.svg"
     :minimized="false"
 />
 
 <!-- Logo with title tooltip -->
 <x-moonshine::layout.logo
     href="/"
-    :logo="'/images/logo.svg'"
-    :logoSmall="'/images/logo-small.svg'"
+    logo="/images/logo.svg"
+    logo-small="/images/logo-small.svg"
     title="Company Name"
 />
 
 <!-- Logo that adapts to sidebar state -->
 <x-moonshine::layout.logo
     href="/dashboard"
-    :logo="'/images/logo-full.svg'"
-    :logoSmall="'/images/logo-icon.svg'"
+    logo="/images/logo-full.svg"
+    logo-small="/images/logo-icon.svg"
     :minimized="true"
 />
 ```
+
 **Parameters:**
-- `href` (string) - URL where logo links when clicked
-- `logo` (string) - path to main logo image
-- `logoSmall` (string, optional) - path to small/icon version of logo
+- `href` (string, required) - URL where logo links when clicked
+- `logo` (string, **REQUIRED**) - path to main logo image (relative path like `/images/logo.svg` or absolute URL)
+- `logo-small` (string, optional) - path to small/icon version of logo
 - `title` (string, optional) - tooltip text on hover
 - `minimized` (bool) - whether to show small logo (interacts with Sidebar state)
+
+**Logo Path Examples:**
+```blade
+<!-- Relative path (recommended) -->
+logo="/images/logo.svg"
+logo="/vendor/moonshine/logo.png"
+logo="/storage/logo.jpg"
+
+<!-- Absolute URL -->
+logo="https://example.com/logo.svg"
+```
 
 **Logo Behavior:**
 - **Responsive**: Automatically switches between full and small logo based on available space
@@ -1045,22 +1300,26 @@ This approach provides:
 ```blade
 <!-- In sidebar header -->
 <x-moonshine::layout.sidebar>
-    <x-moonshine::layout.div class="menu-heading">
-        <x-moonshine::layout.logo
-            href="/"
-            :logo="'/images/company-logo.svg'"
-            :logoSmall="'/images/company-icon.svg'"
-            title="Company Dashboard"
-        />
+    <x-moonshine::layout.div class="menu-header">
+        <x-moonshine::layout.div class="menu-logo">
+            <x-moonshine::layout.logo
+                href="/"
+                logo="/images/company-logo.svg"
+                logo-small="/images/company-icon.svg"
+                title="Company Dashboard"
+            />
+        </x-moonshine::layout.div>
     </x-moonshine::layout.div>
 </x-moonshine::layout.sidebar>
 
 <!-- In top navigation -->
 <x-moonshine::layout.header>
-    <x-moonshine::layout.logo
-        href="/"
-        :logo="'/images/horizontal-logo.svg'"
-    />
+    <x-moonshine::layout.div class="menu-logo">
+        <x-moonshine::layout.logo
+            href="/"
+            logo="/images/horizontal-logo.svg"
+        />
+    </x-moonshine::layout.div>
 </x-moonshine::layout.header>
 ```
 
@@ -1342,11 +1601,13 @@ The burger button must specify which menu it controls by adding the appropriate 
 
 TopBar uses specific CSS class wrappers for proper styling and functionality:
 
-1. **`menu-logo`** - Wrapper for the logo component
+1. **`menu-logo`** - Wrapper for the logo component (logo must have `logo="/path/to/logo.svg"` attribute)
 2. **`menu menu--horizontal`** - Wrapper for the navigation menu (horizontal orientation)
 3. **`menu-actions`** - Wrapper for theme switcher, profile, and other action components
-4. **`menu-burger`** - Wrapper for the burger button
+4. **`menu-burger`** - Wrapper for the burger button (burger must have `topbar` attribute)
 5. **`menu-divider menu-divider--vertical`** - Optional vertical divider between action elements
+
+**⚠️ CRITICAL:** Logo component **must** have the `logo` attribute with a path to the image file, otherwise it will cause an error.
 
 **⚠️ Important TopBar + Sidebar Layout:**
 When using TopBar together with Sidebar, the TopBar must be placed **inside the wrapper** as the **first child element**, positioned above the sidebar in the wrapper structure.
@@ -1469,11 +1730,13 @@ The `MobileBar` component is used when you want to customize the mobile dropdown
 
 MobileBar uses the same wrapper structure as TopBar:
 
-1. **`menu-logo`** - Wrapper for the logo component
+1. **`menu-logo`** - Wrapper for the logo component (logo must have `logo="/path/to/logo.svg"` attribute)
 2. **`menu menu--horizontal`** - Wrapper for the navigation menu (horizontal orientation)
 3. **`menu-actions`** - Wrapper for theme switcher, profile, and other action components
-4. **`menu-burger`** - Wrapper for the burger button
+4. **`menu-burger`** - Wrapper for the burger button (burger must have `mobile-bar` attribute)
 5. **`menu-divider menu-divider--vertical`** - Optional vertical divider between action elements
+
+**⚠️ CRITICAL:** Logo component **must** have the `logo` attribute with a path to the image file, otherwise it will cause an error.
 
 **Important Notes:**
 
@@ -1911,18 +2174,26 @@ These wrappers are required for proper styling, collapse functionality, and resp
 
 ### Body (Layout Body)
 **Purpose:** Main body container for layouts
+
+**⚠️ IMPORTANT:** This component automatically generates `<body>` tags. Do NOT add `<body>` tags manually.
+
 ```blade
 <x-moonshine::layout.body>
-    <x-moonshine::layout.content>
+    <x-moonshine::layout.wrapper>
         <!-- Page content -->
-    </x-moonshine::layout.content>
+    </x-moonshine::layout.wrapper>
 </x-moonshine::layout.body>
 
-<!-- Body with attributes -->
+<!-- Body with custom attributes -->
 <x-moonshine::layout.body class="custom-body">
     <!-- Layout content -->
 </x-moonshine::layout.body>
 ```
+
+**What this component generates:**
+- `<body>` opening and closing tags
+- Alpine.js and theme integration attributes
+- Container for all page layout components
 
 ### Components (Component Container)
 **Purpose:** Container for grouping multiple components
@@ -1977,6 +2248,9 @@ These wrappers are required for proper styling, collapse functionality, and resp
 
 ### Head (HTML Head)
 **Purpose:** Managing HTML head section
+
+**⚠️ IMPORTANT:** This component automatically generates `<head>` tags. Do NOT add `<head>` tags manually.
+
 ```blade
 <x-moonshine::layout.head>
     <x-moonshine::layout.meta name="csrf-token" :content="csrf_token()" />
@@ -1988,8 +2262,17 @@ These wrappers are required for proper styling, collapse functionality, and resp
 </x-moonshine::layout.head>
 ```
 
+**What this component generates:**
+- `<head>` opening and closing tags
+- Base meta tags (charset, viewport)
+- Title tag if specified
+- Container for custom meta tags, assets, and favicons
+
 ### Html (HTML Document)
 **Purpose:** HTML document wrapper with MoonShine features
+
+**⚠️ IMPORTANT:** This component automatically generates `<!DOCTYPE html>` and `<html>` tags. Do NOT add these tags manually.
+
 ```blade
 <x-moonshine::layout.html
     :with-alpine-js="true"
@@ -2009,8 +2292,17 @@ These wrappers are required for proper styling, collapse functionality, and resp
 - `with-themes` (bool) - enable theme system
 - `lang` (string) - document language
 
+**What this component generates:**
+- `<!DOCTYPE html>` declaration
+- `<html>` tag with Alpine.js and theme attributes
+- Proper charset and viewport meta tags
+- All necessary HTML document structure
+
 ### Layout (Root Layout)
 **Purpose:** Root layout component for MoonShine applications
+
+**⚠️ IMPORTANT:** This is the root wrapper component. Your Blade file should start with this component, not with HTML tags.
+
 ```blade
 <x-moonshine::layout>
     <x-moonshine::layout.html :with-alpine-js="true" :with-themes="true">
@@ -2023,6 +2315,11 @@ These wrappers are required for proper styling, collapse functionality, and resp
     </x-moonshine::layout.html>
 </x-moonshine::layout>
 ```
+
+**Key Points:**
+- This is always the outermost component
+- Do NOT add `<!DOCTYPE html>`, `<html>`, `<head>`, or `<body>` tags manually
+- All HTML document structure is generated automatically by child components
 
 ## Common Layout Examples
 
@@ -2128,14 +2425,30 @@ These wrappers are required for proper styling, collapse functionality, and resp
 
 ## Generation Guidelines
 
-1. **Always use the basic structure** with `layout`, `html`, `head`, `body`, `wrapper`
-2. **For responsiveness** use `Grid` and `Column` with different `colSpan` and `adaptiveColSpan`
-3. **For notifications** use `Alert` with appropriate type
-4. **For forms** always add CSRF token and error handling
-5. **For interactivity** use modal windows and Alpine.js events
-6. **Parameters with colon** (`:parameter`) accept PHP expressions
-7. **Parameters without colon** accept string values
-8. **Boolean parameters** can be passed as `:parameter="true"` or just `parameter`
+### Critical Requirements
+
+1. **NEVER add HTML tags manually** - Components generate `<!DOCTYPE html>`, `<html>`, `<head>`, `<body>` automatically
+2. **ALWAYS start with** `<x-moonshine::layout>` as the first line of your Blade file
+3. **ALWAYS use required CSS wrappers and attributes**:
+   - Logo: `<x-moonshine::layout.div class="menu-logo">` + **REQUIRED** `logo="/path/to/logo.svg"` attribute
+   - Sidebar menu: `<x-moonshine::layout.div class="menu menu--vertical">`
+   - TopBar/MobileBar menu: `<x-moonshine::layout.div class="menu menu--horizontal">`
+   - Burger: `<x-moonshine::layout.div class="menu-burger">` + location attribute
+   - Actions: `<x-moonshine::layout.div class="menu-actions">`
+4. **ALWAYS include MoonShine assets** in `<x-moonshine::layout.assets>`:
+   ```blade
+   @vite(['resources/css/main.css', 'resources/js/app.js'], 'vendor/moonshine')
+   ```
+
+### Best Practices
+
+5. **For responsiveness** use `Grid` and `Column` with different `colSpan` and `adaptiveColSpan`
+6. **For notifications** use `Alert` with appropriate type
+7. **For forms** always add CSRF token and error handling
+8. **For interactivity** use modal windows and Alpine.js events
+9. **Parameters with colon** (`:parameter`) accept PHP expressions
+10. **Parameters without colon** accept string values
+11. **Boolean parameters** can be passed as `:parameter="true"` or just `parameter`
 
 ## ⚠️ Important: Component Styling and Spacing
 

@@ -1,3 +1,10 @@
-.claude
-.idea
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.idea/
+.vscode/
+*.tgz
 .context
+.claude

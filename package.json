@@ -1,0 +1,59 @@
+{
+  "name": "@moonshine-software/forty-five",
+  "version": "1.0.0",
+  "description": "AI-powered development toolkit for MoonShine - inspired by GitHub Speckit",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "forty-five": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "commands",
+    "guidelines",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "publish": "npm publish --access public"
+  },
+  "keywords": [
+    "moonshine",
+    "laravel",
+    "ai",
+    "claude",
+    "cli",
+    "development",
+    "speckit",
+    "blade",
+    "components"
+  ],
+  "author": "MoonShine Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moonshine-software/forty-five"
+  },
+  "bugs": {
+    "url": "https://github.com/moonshine-software/forty-five/issues"
+  },
+  "homepage": "https://github.com/moonshine-software/forty-five#readme",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "inquirer": "^9.2.12",
+    "node-fetch": "^3.3.2",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,117 +1,263 @@
-# Forty-Five
+# 🌙 Forty-Five
 
-**AI-Enhanced MoonShine Guidelines Repository**
+> AI-powered development toolkit for MoonShine - Inspired by GitHub Speckit
 
-> ⚠️ **Beta Status**: This project is currently in active development and testing phase.
+Forty-Five is a CLI tool that brings AI-powered development assistance to your MoonShine projects. Install guidelines and slash commands that help AI agents (like Claude) understand MoonShine components and generate production-ready code.
 
-## 🎯 Purpose
+## ✨ Features
 
-This repository aims to significantly improve AI assistant productivity when working with the [MoonShine](https://moonshine-laravel.com) admin panel framework for Laravel.
-
-By providing comprehensive, structured guidelines specifically designed for AI agents, we enable:
-- Faster development with MoonShine
-- Fewer common mistakes and errors
-- Better understanding of framework concepts
-- Consistent code quality
-- Quick problem resolution
-
-## 📚 What's Inside
-
-The repository contains detailed AI-optimized guidelines covering all aspects of MoonShine development:
-
-- **Model Resources** - Resource structure, registration, validation, lifecycle
-- **Fields System** - Field modes, attributes, advanced usage patterns
-- **Relationships** - BelongsTo, HasMany, BelongsToMany configurations
-- **Blade Components** - Complete UI component reference
-- **Common Patterns** - Frequently used scenarios and solutions
+- 🤖 **AI Agent Integration** - Works with Claude Code (more agents coming soon)
+- 📚 **Comprehensive Guidelines** - Complete MoonShine component documentation
+- ⚡ **Slash Commands** - Easy-to-use commands for common tasks
+- 🎯 **Production Ready** - Generates code following best practices
+- 🔄 **Auto-sync** - Keep guidelines and commands up-to-date
 
 ## 🚀 Quick Start
 
-Start with the [Guidelines Documentation](guidelines/README.md) for complete navigation and quick search.
+### Installation
 
-### For AI Assistants
+Install globally via npm:
 
-Read the guidelines in this order:
-1. [guidelines/README.md](guidelines/README.md) - Main navigation
-2. [guidelines/model-resources.md](guidelines/model-resources.md) - Core concepts
-3. Topic-specific guides as needed
-
-### Key Features
-
-✅ **Structured Navigation** - Quick access to any topic
-✅ **Critical Warnings** - Highlighted common pitfalls
-✅ **Code Examples** - Real-world usage patterns
-✅ **Common Mistakes** - What to avoid and how to fix
-✅ **Quick References** - TL;DR summaries
-
-## 📖 Documentation Structure
-
-```
-guidelines/
-├── README.md                  # 🎯 Main entry point with navigation
-├── model-resources.md         # Resources, registration, validation
-├── fields-guide.md           # Fields modes, lifecycle, attributes
-├── relationships.md          # Relationship fields guide
-├── blade-components.md       # Complete Blade components reference
-└── common-patterns.md        # Frequently used patterns
+```bash
+npm install -g @moonshine-software/forty-five
 ```
 
-## 🎓 Learning Paths
+### Initialize in Your Project
 
-### Beginner
-Start with resource basics and component usage
+Navigate to your MoonShine project and run:
 
-### Intermediate
-Master relationships and field customization
+```bash
+cd your-moonshine-project
+forty-five init
+```
 
-### Advanced
-Lifecycle hooks, custom validation, complex patterns
+Follow the prompts to:
+1. Select your AI agent (Claude, Cursor, etc.)
+2. Download commands and guidelines
+3. Set up configuration
 
-See [Guidelines README](guidelines/README.md) for detailed learning paths.
+### Project Structure After Init
 
-## ⚠️ Beta Notice
+```
+your-moonshine-project/
+├── .claude/                    # Claude-specific files
+│   └── commands/
+│       ├── forty-five.components.md
+│       ├── forty-five.layout.md
+│       └── forty-five.palettes.md
+└── .guidelines/                # Shared guidelines
+    ├── blade-components.md
+    └── palettes.md
+```
 
-This project is in **beta stage**. We are:
-- Testing guidelines with various AI assistants
-- Gathering feedback on coverage and clarity
-- Refining structure and navigation
-- Adding more examples and patterns
-- Improving error prevention guidance
+## 📖 Usage
+
+### Available Commands
+
+After initialization, you can use these slash commands in Claude:
+
+#### `/forty-five.components` - Work with Components
+
+Create any MoonShine component with proper structure:
+
+```
+/forty-five.components create a user table with name, email, status badges, and action buttons
+```
+
+```
+/forty-five.components create a modal form for adding new products
+```
+
+#### `/forty-five.layout` - Create Layouts
+
+Generate complete layouts with navigation:
+
+```
+/forty-five.layout create a sidebar layout with logo, menu, and theme switcher
+```
+
+```
+/forty-five.layout create a top navigation bar with horizontal menu
+```
+
+#### `/forty-five.palettes` - Create Color Palettes
+
+Create and modify custom color palettes using OKLCH color space:
+
+```
+/forty-five.palettes create a blue ocean theme with hue 240
+```
+
+```
+/forty-five.palettes create a purple palette for dark and light themes
+```
+
+## 🎯 What Gets Generated
+
+Forty-Five ensures AI agents generate code that follows MoonShine best practices:
+
+✅ **Correct HTML Structure** - No duplicate HTML tags, proper component nesting
+✅ **Required Wrappers** - All CSS classes and wrappers in place
+✅ **Assets Included** - Vite assets properly configured
+✅ **Responsive Design** - Mobile-friendly with proper burger menus
+✅ **Production Ready** - Following all MoonShine conventions
+
+## 📚 Guidelines
+
+The guidelines provide comprehensive documentation for:
+
+### `blade-components.md`
+- Complete component library
+- Critical usage rules
+- Required wrappers and attributes
+- Slot-based vs array-based patterns
+- Best practices and examples
+
+### `palettes.md`
+- OKLCH color space format
+- Complete palette structure
+- Light and dark theme implementation
+- Contrast requirements and best practices
+
+## 🔧 CLI Commands
+
+### `forty-five init`
+
+Initialize Forty-Five in your project.
+
+**Options:**
+- Interactive agent selection
+- Automatic directory creation
+- Downloads latest commands and guidelines
+
+### `forty-five update` (Coming Soon)
+
+Update commands and guidelines to the latest version.
+
+### `forty-five status` (Coming Soon)
+
+Check initialization status and versions.
+
+## 🤝 Supported AI Agents
+
+- ✅ **Claude Code** - Full support
+- 🚧 **Cursor** - Coming soon
+- 🚧 **GitHub Copilot** - Coming soon
+
+## 📝 Examples
+
+### Creating a User Management Interface
+
+```
+/forty-five.components create a users table with:
+- Avatars and name columns
+- Status badges (active/inactive)
+- Role badges with different colors
+- Action buttons (view, edit, delete)
+```
+
+The AI will generate a complete, working table with:
+- Proper slot-based structure
+- MoonShine badge components
+- Icon buttons with proper wrappers
+- All required CSS classes
+
+### Building a Custom Color Palette
+
+```
+/forty-five.palettes create a professional teal palette with:
+- Hue angle 180 (teal/cyan)
+- Both light and dark themes
+- Proper contrast ratios
+- All semantic colors (success, warning, error, info)
+```
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────┐
+│         User's MoonShine Project        │
+├─────────────────────────────────────────┤
+│  .claude/commands/                      │
+│  ├── forty-five.components.md          │
+│  │   → Reads .guidelines/              │
+│  ├── forty-five.layout.md              │
+│  │   → Reads .guidelines/              │
+│  └── forty-five.palettes.md            │
+│      → Reads .guidelines/              │
+│                                         │
+│  .guidelines/                           │
+│  ├── blade-components.md               │
+│  └── palettes.md                       │
+└─────────────────────────────────────────┘
+```
+
+## 🔄 Update Process
+
+Guidelines and commands are downloaded from the official repository:
+```
+https://github.com/moonshine-software/forty-five
+```
+
+When you run `forty-five init`, it fetches:
+- Latest command files for your selected agent
+- Latest guideline files
+- Ensures you have the most up-to-date documentation
+
+## 🐛 Troubleshooting
+
+### "composer.json not found"
+Make sure you're in your Laravel/MoonShine project root directory.
+
+### Commands not appearing in Claude
+1. Restart Claude Code
+2. Check that files were created in `.claude/commands/`
+3. Verify slash commands with `/` in Claude
+
+### Guidelines not being followed
+Make sure the AI agent can access `.guidelines/` directory. Commands are configured to read from this location.
+
+## 📦 Package Development
+
+### Building from Source
+
+```bash
+# Clone repository
+git clone https://github.com/moonshine-software/forty-five.git
+cd forty-five
+
+# Install dependencies
+npm install
+
+# Build
+npm run build
+
+# Test locally
+npm link
+cd /path/to/your-project
+forty-five init
+```
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you find:
-- Missing information
-- Unclear explanations
-- Outdated examples
-- Common patterns not covered
-
-Please open an issue or submit a pull request.
-
-## 📝 Version
-
-**Current Version**: Beta
-**MoonShine Compatibility**: 3.x
-**Status**: Active Development
-
-## 🔗 Links
-
-- [MoonShine Official Documentation](https://moonshine-laravel.com)
-- [MoonShine GitHub](https://github.com/moonshine-software/moonshine)
-- [Guidelines Documentation](guidelines/README.md)
+Contributions are welcome! Please read our contributing guidelines before submitting PRs.
 
 ## 📄 License
 
-This project is open source and available for community use.
+MIT License - see LICENSE file for details.
 
-## 🎯 Goals
+## 🙏 Acknowledgments
 
-- Reduce MoonShine learning curve for AI assistants
-- Provide instant access to best practices
-- Prevent common development errors
-- Accelerate MoonShine project development
-- Build comprehensive knowledge base
+- Inspired by GitHub Speckit
+- Built for the MoonShine Laravel admin panel
+- Powered by AI agents like Claude
+
+## 🔗 Links
+
+- [MoonShine Documentation](https://moonshine-laravel.com)
+- [GitHub Repository](https://github.com/moonshine-software/forty-five)
+- [Report Issues](https://github.com/moonshine-software/forty-five/issues)
 
 ---
 
-**Start exploring**: [Guidelines Documentation →](guidelines/README.md)
+Made with 🌙 by the MoonShine team
