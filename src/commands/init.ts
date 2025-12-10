@@ -125,6 +125,8 @@ export async function initCommand() {
   console.log(chalk.cyan('     /forty-five.components') + chalk.gray(' - Work with Blade components'));
   console.log(chalk.cyan('     /forty-five.layout') + chalk.gray(' - Create layouts'));
   console.log(chalk.cyan('     /forty-five.palettes') + chalk.gray(' - Create color palettes'));
+  console.log(chalk.cyan('     /forty-five.field') + chalk.gray(' - Create custom fields'));
+  console.log(chalk.cyan('     /forty-five.component') + chalk.gray(' - Create custom components'));
   console.log(chalk.gray('\n  3. Example: ') + chalk.cyan('/forty-five.components create a user table with actions'));
   console.log();
 }
