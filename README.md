@@ -30,6 +30,7 @@ Navigate to your MoonShine project and run:
 cd your-moonshine-project
 forty-five init
 ```
+Note: The folder must be owned by the current user.
 
 Follow the prompts to:
 1. Select your AI agent (Claude, Cursor, etc.)
