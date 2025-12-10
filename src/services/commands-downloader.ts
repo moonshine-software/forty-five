@@ -10,6 +10,8 @@ const COMMAND_FILES = [
   'forty-five.components.md',
   'forty-five.layout.md',
   'forty-five.palettes.md',
+  'forty-five.field.md',
+  'forty-five.component.md',
 ];
 
 export async function downloadCommands(config: InitConfig): Promise<DownloadResult> {
