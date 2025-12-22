@@ -30,6 +30,7 @@ Navigate to your MoonShine project and run:
 cd your-moonshine-project
 forty-five init
 ```
+Note: The folder must be owned by the current user.
 
 Follow the prompts to:
 1. Select your AI agent (Claude, Cursor, etc.)
@@ -44,10 +45,14 @@ your-moonshine-project/
 │   └── commands/
 │       ├── forty-five.components.md
 │       ├── forty-five.layout.md
-│       └── forty-five.palettes.md
+│       ├── forty-five.palettes.md
+│       ├── forty-five.field.md
+│       └── forty-five.component.md
 └── .guidelines/                # Shared guidelines
     ├── blade-components.md
-    └── palettes.md
+    ├── palettes.md
+    ├── fields-development.md
+    └── components-development.md
 ```
 
 ## 📖 Usage
@@ -92,6 +97,30 @@ Create and modify custom color palettes using OKLCH color space:
 /forty-five.palettes create a purple palette for dark and light themes
 ```
 
+#### `/forty-five.field` - Create Custom Fields
+
+Create custom MoonShine fields with proper structure and methods:
+
+```
+/forty-five.field create a rating field with stars from 1 to 5
+```
+
+```
+/forty-five.field create a color picker field with preview
+```
+
+#### `/forty-five.component` - Create Custom Components
+
+Create custom MoonShine components for UI decoration:
+
+```
+/forty-five.component create an alert component with different types
+```
+
+```
+/forty-five.component create a stats card with icon and value
+```
+
 ## 🎯 What Gets Generated
 
 Forty-Five ensures AI agents generate code that follows MoonShine best practices:
@@ -118,6 +147,21 @@ The guidelines provide comprehensive documentation for:
 - Complete palette structure
 - Light and dark theme implementation
 - Contrast requirements and best practices
+
+### `fields-development.md`
+- Custom field creation guide
+- Field class anatomy and methods
+- View templates with Alpine.js
+- Fluent methods and field modes
+- Relationship fields handling
+- Complete examples (Rating, JSON, File Upload)
+
+### `components-development.md`
+- Custom component creation guide
+- Components vs Fields comparison
+- Fluent methods and viewData()
+- Slots and nested components
+- Complete examples (Alert, StatsCard, Breadcrumbs)
 
 ## 🔧 CLI Commands
 
@@ -172,6 +216,40 @@ The AI will generate a complete, working table with:
 - All semantic colors (success, warning, error, info)
 ```
 
+### Creating a Custom Field
+
+```
+/forty-five.field create a JSON editor field that:
+- Displays formatted JSON in a textarea
+- Has syntax highlighting
+- Validates JSON on input
+- Saves as JSON string to database
+```
+
+The AI will generate:
+- PHP class in `app/MoonShine/Fields/JsonEditor.php`
+- Blade view in `resources/views/admin/fields/json-editor.blade.php`
+- Proper `viewData()` method
+- Correct `resolveValue()` and `resolveOnApply()` methods
+- Alpine.js integration for interactivity
+
+### Creating a Custom Component
+
+```
+/forty-five.component create a stats card component that:
+- Shows an icon, value, and label
+- Supports different colors
+- Value can be dynamic (closure)
+- Used for dashboard widgets
+```
+
+The AI will generate:
+- PHP class in `app/MoonShine/Components/StatsCard.php`
+- Blade view in `resources/views/admin/components/stats-card.blade.php`
+- Fluent methods for configuration
+- Support for closures in values
+- Proper attribute handling
+
 ## 🏗️ Architecture
 
 ```
@@ -183,12 +261,18 @@ The AI will generate a complete, working table with:
 │  │   → Reads .guidelines/              │
 │  ├── forty-five.layout.md              │
 │  │   → Reads .guidelines/              │
-│  └── forty-five.palettes.md            │
+│  ├── forty-five.palettes.md            │
+│  │   → Reads .guidelines/              │
+│  ├── forty-five.field.md               │
+│  │   → Reads .guidelines/              │
+│  └── forty-five.component.md           │
 │      → Reads .guidelines/              │
 │                                         │
 │  .guidelines/                           │
 │  ├── blade-components.md               │
-│  └── palettes.md                       │
+│  ├── palettes.md                       │
+│  ├── fields-development.md             │
+│  └── components-development.md         │
 └─────────────────────────────────────────┘
 ```
 

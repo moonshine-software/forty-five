@@ -9,6 +9,8 @@ const REPO_BASE_URL = 'https://raw.githubusercontent.com/moonshine-software/fort
 const GUIDELINE_FILES = [
   'blade-components.md',
   'palettes.md',
+  'fields-development.md',
+  'components-development.md',
 ];
 
 export async function downloadGuidelines(config: InitConfig): Promise<DownloadResult> {
