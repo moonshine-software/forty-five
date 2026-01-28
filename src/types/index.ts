@@ -22,3 +22,9 @@ export interface GuidelineFile {
   path: string;
   content: string;
 }
+
+export interface SkillFile {
+  name: string;
+  path: string;
+  content: string;
+}

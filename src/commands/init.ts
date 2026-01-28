@@ -6,6 +6,7 @@ import { join } from 'path';
 import type { Agent, InitConfig } from '../types/index.js';
 import { downloadCommands } from '../services/commands-downloader.js';
 import { downloadGuidelines } from '../services/guidelines-downloader.js';
+import { downloadSkills } from '../services/skills-downloader.js';
 
 export async function initCommand() {
   console.log(chalk.cyan.bold('\n🌙 Forty-Five Initialization\n'));
@@ -58,10 +59,15 @@ export async function initCommand() {
   try {
     const agentDir = answers.agent === 'claude' ? '.claude' : `.${answers.agent}`;
     const commandsDir = join(cwd, agentDir, 'commands');
+    const skillsDir = join(cwd, agentDir, 'skills');
     const guidelinesDir = join(cwd, '.guidelines');
 
     if (!existsSync(commandsDir)) {
       mkdirSync(commandsDir, { recursive: true });
+    }
+
+    if (!existsSync(skillsDir)) {
+      mkdirSync(skillsDir, { recursive: true });
     }
 
     if (!existsSync(guidelinesDir)) {
@@ -117,16 +123,43 @@ export async function initCommand() {
     process.exit(1);
   }
 
+  // Download skills
+  spinner.start('Downloading MoonShine skills...');
+
+  try {
+    const skillsResult = await downloadSkills(config);
+
+    if (skillsResult.success) {
+      spinner.succeed(`Downloaded ${skillsResult.filesDownloaded} skills`);
+    } else {
+      spinner.warn(`Downloaded ${skillsResult.filesDownloaded} skills with some errors`);
+      if (skillsResult.errors.length > 0) {
+        console.log(chalk.yellow('\nErrors:'));
+        skillsResult.errors.forEach(err => console.log(chalk.yellow(`  - ${err}`)));
+      }
+    }
+  } catch (error) {
+    spinner.fail('Failed to download skills');
+    console.error(chalk.red(error));
+    process.exit(1);
+  }
+
   // Success message
   console.log(chalk.green.bold('\n✨ Forty-Five initialized successfully!\n'));
   console.log(chalk.cyan('Next steps:'));
   console.log(chalk.gray('  1. Open your project in Claude Code'));
-  console.log(chalk.gray('  2. Use slash commands like:'));
+  console.log(chalk.gray('  2. Use slash commands:'));
   console.log(chalk.cyan('     /forty-five.components') + chalk.gray(' - Work with Blade components'));
   console.log(chalk.cyan('     /forty-five.layout') + chalk.gray(' - Create layouts'));
   console.log(chalk.cyan('     /forty-five.palettes') + chalk.gray(' - Create color palettes'));
   console.log(chalk.cyan('     /forty-five.field') + chalk.gray(' - Create custom fields'));
   console.log(chalk.cyan('     /forty-five.component') + chalk.gray(' - Create custom components'));
-  console.log(chalk.gray('\n  3. Example: ') + chalk.cyan('/forty-five.components create a user table with actions'));
+  console.log(chalk.gray('\n  3. Or use skills:'));
+  console.log(chalk.cyan('     /moonshine-components') + chalk.gray(' - Blade components context'));
+  console.log(chalk.cyan('     /moonshine-layout') + chalk.gray(' - Layout creation context'));
+  console.log(chalk.cyan('     /moonshine-palettes') + chalk.gray(' - Color palettes context'));
+  console.log(chalk.cyan('     /moonshine-field') + chalk.gray(' - Custom field development'));
+  console.log(chalk.cyan('     /moonshine-component') + chalk.gray(' - Custom component development'));
+  console.log(chalk.gray('\n  4. Example: ') + chalk.cyan('/forty-five.components create a user table with actions'));
   console.log();
 }

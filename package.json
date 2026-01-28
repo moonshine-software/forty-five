@@ -1,6 +1,6 @@
 {
   "name": "@moonshine-software/forty-five",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "AI-powered development toolkit for MoonShine - inspired by GitHub Speckit",
   "main": "dist/index.js",
   "type": "module",
@@ -10,6 +10,7 @@
   "files": [
     "dist",
     "commands",
+    "skills",
     "guidelines",
     "README.md",
     "LICENSE"
