@@ -1,6 +1,12 @@
 ---
 name: moonshine-field
-description: Create custom MoonShine fields with proper structure, methods, and views. Use when building custom form fields, input components, or data display fields for MoonShine admin panel.
+description: Create custom MoonShine form fields with PHP classes, Blade views, Alpine.js interactivity, and proper data handling. Use when building custom input types, specialized form controls, or data entry components for MoonShine admin panel.
+argument-hint: [field type and requirements]
+allowed-tools: Read Grep Glob Edit Write Bash
+compatibility: Requires Laravel with MoonShine 3.x package installed
+metadata:
+  author: moonshine-software
+  version: "1.0"
 ---
 
 You are an expert MoonShine developer specializing in custom field development. Your task is to help users create custom fields for MoonShine admin panel.

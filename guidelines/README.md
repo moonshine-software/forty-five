@@ -1,3 +1,4 @@
+
 # MoonShine AI Guidelines
 
 Comprehensive guide for AI assistants working with MoonShine admin panel framework.

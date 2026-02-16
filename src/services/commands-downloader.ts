@@ -1,7 +1,8 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import fetch from 'node-fetch';
-import type { InitConfig, DownloadResult, CommandFile } from '../types/index.js';
+import type { InitConfig, DownloadResult } from '../types/index.js';
+import { getAgentConfig } from '../agents.js';
 
 const REPO_BASE_URL = 'https://raw.githubusercontent.com/moonshine-software/forty-five/main';
 
@@ -15,15 +16,15 @@ const COMMAND_FILES = [
 ];
 
 export async function downloadCommands(config: InitConfig): Promise<DownloadResult> {
-  const agentDir = config.agent === 'claude' ? '.claude' : `.${config.agent}`;
-  const commandsDir = join(config.projectPath, agentDir, 'commands');
+  const agentConfig = getAgentConfig(config.agent);
+  const commandsDir = join(config.projectPath, agentConfig.configDir, 'commands');
 
   const errors: string[] = [];
   let filesDownloaded = 0;
 
   for (const fileName of COMMAND_FILES) {
     try {
-      const url = `${REPO_BASE_URL}/commands/${config.agent}/${fileName}`;
+      const url = `${REPO_BASE_URL}/commands/${fileName}`;
       const response = await fetch(url);
 
       if (!response.ok) {

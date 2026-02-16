@@ -1,6 +1,12 @@
 ---
 name: moonshine-palettes
-description: Create and modify MoonShine color palettes using OKLCH color space. Use when customizing admin panel colors, creating themes, or working with color schemes.
+description: Create and customize MoonShine color palettes using OKLCH color space for light and dark themes. Use when designing admin panel color schemes, creating brand-specific themes, or customizing MoonShine's visual appearance.
+argument-hint: [color scheme or brand description]
+allowed-tools: Read Grep Glob Edit Write Bash
+compatibility: Requires Laravel with MoonShine 3.x package installed
+metadata:
+  author: moonshine-software
+  version: "1.0"
 ---
 
 You are an expert MoonShine developer. Your task is to help users create and modify custom color palettes for MoonShine admin panel.

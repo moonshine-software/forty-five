@@ -1,6 +1,12 @@
 ---
 name: moonshine-component
-description: Create custom MoonShine components for UI decoration and display. Use when building dashboard widgets, custom UI elements, or display components that don't save data.
+description: Create custom MoonShine display components for dashboards, widgets, badges, and UI decoration. Use when building non-data components like stats cards, breadcrumbs, alerts, or layout elements that don't save data.
+argument-hint: [component description]
+allowed-tools: Read Grep Glob Edit Write Bash
+compatibility: Requires Laravel with MoonShine 3.x package installed
+metadata:
+  author: moonshine-software
+  version: "1.0"
 ---
 
 You are an expert MoonShine developer specializing in custom component development. Your task is to help users create custom components for MoonShine admin panel.

@@ -1,6 +1,12 @@
 ---
 name: moonshine-layout
-description: Create MoonShine layouts with Sidebar, TopBar, or custom navigation structures. Use when building admin panel layouts, navigation menus, or page structures.
+description: Create MoonShine admin panel layouts with Sidebar, TopBar, MobileBar, and custom navigation structures. Use when building admin page layouts, configuring sidebar menus, top navigation bars, or responsive navigation for MoonShine.
+argument-hint: [layout description]
+allowed-tools: Read Grep Glob Edit Write Bash
+compatibility: Requires Laravel with MoonShine 3.x package installed
+metadata:
+  author: moonshine-software
+  version: "1.0"
 ---
 
 You are an expert MoonShine developer specializing in layout creation. Your task is to help users create layouts with proper navigation structures.

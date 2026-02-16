@@ -4,6 +4,7 @@ import ora from 'ora';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import type { Agent, InitConfig } from '../types/index.js';
+import { getAgentChoices, getAgentConfig } from '../agents.js';
 import { downloadCommands } from '../services/commands-downloader.js';
 import { downloadGuidelines } from '../services/guidelines-downloader.js';
 import { downloadSkills } from '../services/skills-downloader.js';
@@ -25,22 +26,7 @@ export async function initCommand() {
       type: 'list',
       name: 'agent',
       message: 'Which AI agent are you using?',
-      choices: [
-        {
-          name: '🤖 Claude (claude.ai/code)',
-          value: 'claude',
-        },
-        {
-          name: '💬 Cursor (Coming soon)',
-          value: 'cursor',
-          disabled: true,
-        },
-        {
-          name: '🐙 GitHub Copilot (Coming soon)',
-          value: 'github-copilot',
-          disabled: true,
-        },
-      ],
+      choices: getAgentChoices(),
       default: 'claude',
     },
   ]);
@@ -57,9 +43,9 @@ export async function initCommand() {
   const spinner = ora('Creating directories...').start();
 
   try {
-    const agentDir = answers.agent === 'claude' ? '.claude' : `.${answers.agent}`;
-    const commandsDir = join(cwd, agentDir, 'commands');
-    const skillsDir = join(cwd, agentDir, 'skills');
+    const agentConfig = getAgentConfig(answers.agent);
+    const commandsDir = join(cwd, agentConfig.configDir, 'commands');
+    const skillsDir = join(cwd, agentConfig.skillsDir);
     const guidelinesDir = join(cwd, '.guidelines');
 
     if (!existsSync(commandsDir)) {

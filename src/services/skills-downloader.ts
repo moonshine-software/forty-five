@@ -2,6 +2,7 @@ import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import fetch from 'node-fetch';
 import type { InitConfig, DownloadResult } from '../types/index.js';
+import { getAgentConfig } from '../agents.js';
 
 const REPO_BASE_URL = 'https://raw.githubusercontent.com/moonshine-software/forty-five/main';
 
@@ -15,8 +16,8 @@ const SKILL_NAMES = [
 ];
 
 export async function downloadSkills(config: InitConfig): Promise<DownloadResult> {
-  const agentDir = config.agent === 'claude' ? '.claude' : `.${config.agent}`;
-  const skillsDir = join(config.projectPath, agentDir, 'skills');
+  const agentConfig = getAgentConfig(config.agent);
+  const skillsDir = join(config.projectPath, agentConfig.skillsDir);
 
   const errors: string[] = [];
   let filesDownloaded = 0;

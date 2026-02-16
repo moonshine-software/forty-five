@@ -1,6 +1,12 @@
 ---
 name: moonshine-components
-description: Work with MoonShine Blade components - create interfaces, tables, forms, and layouts. Use when building UI with MoonShine components, creating tables, forms, or page layouts.
+description: Build MoonShine admin panel UI with Blade components — tables, forms, cards, modals, navigation, and page layouts. Use when creating admin interfaces, data tables with actions, form layouts, or any UI using MoonShine's component library.
+argument-hint: [description of what to build]
+allowed-tools: Read Grep Glob Edit Write Bash
+compatibility: Requires Laravel with MoonShine 3.x package installed
+metadata:
+  author: moonshine-software
+  version: "1.0"
 ---
 
 You are an expert MoonShine developer. Your task is to help users work with MoonShine Blade components.

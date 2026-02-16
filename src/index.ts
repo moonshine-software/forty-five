@@ -1,3 +1,4 @@
+export * from './agents.js';
 export * from './types/index.js';
 export * from './commands/init.js';
 export * from './services/commands-downloader.js';

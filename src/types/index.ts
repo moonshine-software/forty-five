@@ -1,4 +1,20 @@
-export type Agent = 'claude' | 'cursor' | 'github-copilot';
+export type Agent =
+  | 'claude'
+  | 'cursor'
+  | 'codex'
+  | 'copilot'
+  | 'gemini'
+  | 'junie'
+  | 'windsurf'
+  | 'warp'
+  | 'zencoder'
+  | 'roocode'
+  | 'kilocode'
+  | 'antigravity'
+  | 'opencode'
+  | 'universal';
+
+export type { AgentConfig } from '../agents.js';
 
 export interface InitConfig {
   agent: Agent;
